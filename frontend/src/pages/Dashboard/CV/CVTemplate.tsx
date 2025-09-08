@@ -1,13 +1,14 @@
 
 import { useParams } from 'react-router-dom'
+
 import { useSearchParams } from 'react-router-dom'
 import ModernMini from '@/components/CVs/CVTemplates/ModernMini'
 import ModernProf from '@/components/CVs/CVTemplates/ModernProf'
 import MiniProf from '@/components/CVs/CVTemplates/MiniProf'
 import ModernTwo from '@/components/CVs/CVTemplates/ModernTwo'
 import api from '@/middleware/interceptor'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import React, { useEffect,useState } from 'react'
+
 import {type  ResumeData } from '@/components/CVs/interfaces/cvInterface'
 import { AxiosError } from 'axios'
 import Loading from '@/components/Loading/Loading'
@@ -19,13 +20,13 @@ function CVTemplate() {
     const {resumeId}=useParams()
     const [searchParams]=useSearchParams()
     const resumeType:string=searchParams.get('resumeType') ?? ""
-
+  
     const fetchResume=async()=>{
             setError('')
             setLoading(true)
         try{
             
-            const response=await api.get(`resume/getResume/${resumeId}?resumeType=${resumeType}`)
+            const response=await api.get(`resume/${resumeId}?resumeType=${resumeType}`)
 
             const data={...response.data,experiences:response.data.experiences.map((exp:Experience)=>{
                 return {...exp,from:new Date(exp.from),To:new Date(exp.To)}
@@ -57,4 +58,4 @@ function CVTemplate() {
     else return <p>Template Not Found</p>
 }
 
-export default CVTemplate
+export default React.memo(CVTemplate)

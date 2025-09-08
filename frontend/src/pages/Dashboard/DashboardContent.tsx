@@ -5,7 +5,7 @@ import {
   ChevronRight,
   
 } from 'lucide-react';
-import {useEffect, useRef,useState} from 'react'
+import React, {useEffect, useRef,useState} from 'react'
 import SavedResumes from './SavedResumes/SavedResumes';
 
 import { Link } from 'react-router-dom';
@@ -46,7 +46,7 @@ const DashboardContent = () => {
 
     const FetchAllResumes=async()=>{
       try{
-        const response=await api.get('resume/getAllResumes')     
+        const response=await api.get('resume')     
         return response.data 
       
       }
@@ -59,7 +59,7 @@ const DashboardContent = () => {
     }
     const FetchLatestATSResults=async()=>{
       try{
-        const response=await api.get('ats/getLatestResults') 
+        const response=await api.get('ats/results/latest') 
       
         return { recommendations:response.data.recommendations , foundKeywords:response.data.foundKeywords , matchScore:response.data.matchScore ,_id:response.data._id, missingKeywords:response.data.missingKeywords}  as LatestATSResultsType | ''
       }
@@ -202,4 +202,4 @@ const DashboardContent = () => {
   );
 };
 
-export default DashboardContent;
+export default React.memo(DashboardContent);

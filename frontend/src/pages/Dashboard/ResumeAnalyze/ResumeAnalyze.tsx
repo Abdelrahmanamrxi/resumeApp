@@ -1,55 +1,53 @@
-import React, { useState } from "react"
+import React from "react"
 import { Upload, FileTextIcon,Briefcase,Loader } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Loading from "@/components/Loading/Loading"
 import { AxiosError } from "axios"
 import api from "@/middleware/interceptor"
+import { useNavigate } from "react-router-dom"
+import useResumeUploader from "@/hooks/useResumeUploader"
 
 
 
 function ResumeAnalyze() {
-    const[file,setFile]=useState<File | null>(null)
-    const[fileSizeError,setSize]=useState<string>('')
-    const [jobDescription,setJob]=useState<string>('')
+    const[state,dispatch]=useResumeUploader()
+    const navigate=useNavigate()
     
 
-    const[isLoading,setLoading]=useState<boolean>(false)
-    const[error,setError]=useState<string | null >('')
-
-    const [dragEvent,setEvent]=useState<boolean>(false)
-
     const handleFileChange=(file:File)=>{
-        setSize("")
+        dispatch({type:'SET_FILE_ERROR',payload:''})
       
         const fileSizeinMB=parseFloat((file.size / 1024 / 1024).toFixed(2))
         if(fileSizeinMB>5){
-         setSize('File is too large please try to reduce file size and try again later.')
+           dispatch({type:'SET_FILE_ERROR',payload:'File is too large please try to reduce file size and try again later.'})
         }
+       
         else{
-            setFile(file)
+            dispatch({type:'SET_FILE',payload:file})
+  
         }
     }
    const handleDragEvent=(e:React.DragEvent<HTMLDivElement>)=>{
     e.preventDefault()
     e.stopPropagation()
     if(e.type==='dragenter' || e.type==="dragover"){
-        setEvent(true)
+        dispatch({type:'SET_DRAG_EVENT',payload:true})
     }
     else if(e.type==="dragleave"){
-        setEvent(false)
+        dispatch({type:'SET_DRAG_EVENT',payload:false})
     }
    }
    const handleFileDrop=(e:React.DragEvent<HTMLDivElement>)=>{
     e.preventDefault()
     e.stopPropagation()
-    setEvent(false)
+    dispatch({type:'SET_DRAG_EVENT',payload:false})
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
         handleFileChange(e.dataTransfer.files[0]);
         }
         }
    const handleFileInput=(e:React.ChangeEvent<HTMLInputElement>)=>{
         e.preventDefault()
-        setError('')
+        dispatch({type:'SET_ERROR',payload:''})
         const files = e.target.files  // type: FileList | null
           if (files && files[0]) {
           handleFileChange(files[0]) // safe, because files is not null
@@ -59,27 +57,29 @@ function ResumeAnalyze() {
    async function handleSubmit(e:React.FormEvent<HTMLFormElement>){
     try{
       e.preventDefault()
-      setLoading(true)
-      setError('')
+      dispatch({type:'SET_LOADING',payload:true})
+      dispatch({type:'SET_ERROR',payload:''})
       const formData=new FormData()
-      if(file){
-        formData.append('file',file)
+      if(state.fileInformation.file){
+        formData.append('file',state.fileInformation.file)
       }
 
-    formData.append('jobDescription',jobDescription)
-    const response=await api.post('/resume/analyzeResume',formData)
-    
-    setLoading(false)
+    formData.append('jobDescription',state.jobDescription)
+    const response=await api.post('/resume/analysis',formData)
+    dispatch({type:'SET_ID',payload:response.data.response})
+    dispatch({type:'SET_LOADING',payload:false})
+    navigate(`${response.data.response}`)
   }
   catch(err){
-    if(err instanceof AxiosError){
-      setError(err.response?.data.message)
+    if(err instanceof AxiosError && err.response){
+        dispatch({type:'SET_ERROR',payload:err.response.data.message})
+        
     }
-    setLoading(false)
+   dispatch({type:'SET_LOADING',payload:false})
     
   }
    }
-  if(isLoading && !data)
+  if(state.isLoading)
   return <Loading message="Analyzing your Resume Please hold on..."/>
   else
   return (
@@ -90,9 +90,9 @@ function ResumeAnalyze() {
         <div className="bg-white md:w-3/4  rounded-2xl mt-5 shadow-xl p-8 mb-8">
           <div 
             className={`border-3  rounded-xl p-12 text-center transition-all duration-300 ${
-              dragEvent 
+              state.dragEvent 
                 ? 'border-blue-500 bg-blue-50' 
-                : file 
+                : state.fileInformation.file 
                 ? 'border-blue-500 bg-green-50' 
                   : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
             }`}
@@ -102,15 +102,15 @@ function ResumeAnalyze() {
             onDrop={handleFileDrop}
           >
             <div className="flex flex-col items-center">
-              {file ? (
+              {state.fileInformation.file ? (
                 <>
                   <FileTextIcon className="w-16 h-16 text-green-800 mb-4" />
-                  {error ?<p className="errorResults">{error}</p>:(
+                  {state.fileInformation.error ?<p className="errorResults">{state.fileInformation.error}</p>:(
                     <>
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">File Ready!</h3>
-                  <p className="text-gray-600 mb-4">{file.name}</p>
+                  <p className="text-gray-600 mb-4">{state.fileInformation.file.name}</p>
                   <p className="text-sm text-gray-500 mb-6">
-                    Size: {(file.size / 1024 / 1024).toFixed(2)} MB
+                    Size: {(state.fileInformation.file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                     </>
                   )}
@@ -120,12 +120,12 @@ function ResumeAnalyze() {
                 <>
                   <Upload className="w-16 h-16 text-gray-400 mb-4" />
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">Upload Your Resume</h3>
-                  {error ? <p className="errorResults">{error}</p>:
+                  {state.fileInformation.error ? <p className="errorResults">{state.fileInformation.error}</p>:
                   (
                     <>
                     <p className="text-gray-600 mb-4">Drag and drop your resume here, or click to browse</p>
                     <p className="text-sm text-gray-500 mb-6">Supports PDF, DOC, DOCX files up to 5MB</p>
-                    <p className="errorMessage mb-3">{fileSizeError}</p>
+                    <p className="errorMessage mb-3">{state.fileInformation.fileSizeError}</p>
                     </>
                   )
                   }
@@ -144,7 +144,7 @@ function ResumeAnalyze() {
                 htmlFor="file-upload"
                 className="bg-blue-600 hover:bg-blue-700 mt-3 text-white px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200 font-medium"
                 >
-                {file ? 'Change File' : 'Browse Files'}
+                {state.fileInformation.file ? 'Change File' : 'Browse Files'}
               </label>
             </div>
           </div>
@@ -167,7 +167,7 @@ function ResumeAnalyze() {
               
                
               <textarea
-                onChange={(e)=>{setJob(e.target.value)}}
+                onChange={(e)=>{dispatch({type:'SET_JOB',payload:e.target.value})}}
                 placeholder="Paste the job description here for more targeted analysis...
 
 Example: We are looking for a Software Engineer with experience in React, Node.js, and cloud technologies. The ideal candidate will have 3+ years of experience, strong problem-solving skills, and experience with Agile methodologies..."
@@ -175,7 +175,7 @@ Example: We are looking for a Software Engineer with experience in React, Node.j
               />
               </div>
     </div> 
-    <Button className="px-8 py-5 mb-6">{!isLoading?"Analyze Resume":<span className="flex flex-row gap-2 items-center">Analyzing Resume.. <Loader className="animate-spin"/></span>}</Button>
+    <Button className="px-8 py-5 mb-6">{!state.isLoading?"Analyze Resume":<span className="flex flex-row gap-2 items-center">Analyzing Resume.. <Loader className="animate-spin"/></span>}</Button>
     </form>
   )
 

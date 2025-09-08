@@ -13,6 +13,7 @@ class OpenApiService {
     async generateAIAnaylsis(text:string,jobDescription:string){
         const response=await this.groq.chat.completions.create({
             model:'openai/gpt-oss-120b',
+            max_tokens:2000,
             messages:[
                 {
                     role:'system',

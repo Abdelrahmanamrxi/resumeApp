@@ -22,7 +22,7 @@ function CVTemplate3({data}:{data:ResumeData}) {
         addAccentColor,addTextColor
     
             }=useResumeData(data)
-
+           
 
 
 

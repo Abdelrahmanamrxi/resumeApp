@@ -20,6 +20,7 @@ class ATS_Service {
             else return null
         }
         catch(err){
+            console.log(err)
             throw new HttpException('Error While Fetching ATS Data')
         }
     }

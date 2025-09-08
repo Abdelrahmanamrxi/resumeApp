@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "../../../components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CheckCircle2, XCircle, Lightbulb, ShieldCheck, Target, FileCheck, AlertTriangle, ListChecks, BarChart2 } from "lucide-react";
+import {motion} from 'framer-motion'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Loading from "@/components/Loading/Loading";
+import { useParams } from "react-router-dom";
+import { CheckCircle2, XCircle, Lightbulb, ShieldCheck, Target, FileCheck, AlertTriangle, ListChecks, BarChart2,ChevronLeft } from "lucide-react";
+import api from "@/middleware/interceptor";
+import { AxiosError } from "axios";
+
 
 // -------------------- Types ---------------------
 export type ATSResult = {
@@ -33,6 +41,19 @@ export type ATSResult = {
 };
 
 // ===================== Helpers =====================
+const listVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15, // delay between each child
+    },
+  },
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
+};
 function verdictStyles(v: ATSResult["verdict"]) {
   switch (v) {
     case "Strong Match":
@@ -84,8 +105,54 @@ const SectionRow: React.FC<{ label: string; ok: boolean }> = ({ label, ok }) => 
 );
 
 // ===================== Main Component =====================
-export default function ATSAnalysis() {
-  const { matchScore, verdict, strengths, weakness, missingKeywords, foundKeywords, recommendations, sections, metrics } = data;
+
+
+
+
+ function ATSAnalysis() {
+    const[data,setData]=useState<ATSResult>()
+    const {id:_id}=useParams() 
+   
+    const[isLoading,setLoading]=useState<boolean>(false)
+    const[error,setError]=useState<string>()
+    
+    const navigate=useNavigate()
+
+    const FetchATSData=async()=>{
+      try{
+        setLoading(true)
+        setError('')
+        const response=await api.get(`/ats/results/${_id}`) 
+        setData(response.data)
+        setLoading(false)
+      }
+      catch(err){
+        
+        if(err instanceof AxiosError && err.response){
+          setError(err.response.data.message)
+          setLoading(false)
+        }
+      }
+    
+  }
+
+  useEffect(()=>{
+    FetchATSData()
+  },[])
+  
+  if(error) return (
+    <div className="">
+    <button onClick={()=>{navigate(-1)}} className="p-4 flex-row flex gap-2 items-center hover:underline cursor-pointer"><ChevronLeft/> Back</button>
+    <div className="flex mt-24 items-center  justify-center h-full">
+    <p className="text-lg text-red-700 font-mono">{error}</p>
+    </div>
+    </div>
+ )
+  
+  if(!data || isLoading) return <Loading message="Fetching ATS results please hold on..."/>
+
+
+  const { matchScore, verdict, strengths, weakness, missingKeywords, foundKeywords, recommendations, sections, metrics } = data ;
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b mt-5 from-white to-slate-50 p-6 md:p-10">
@@ -155,22 +222,34 @@ export default function ATSAnalysis() {
             <CardContent>
               <Tabs defaultValue="strengths">
                 <TabsList className="grid grid-cols-2">
-                  <TabsTrigger value="strengths" className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Strengths</TabsTrigger>
-                  <TabsTrigger value="weakness" className="flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> Weaknesses</TabsTrigger>
+                  <TabsTrigger value="strengths" className="flex cursor-pointer items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Strengths</TabsTrigger>
+                  <TabsTrigger value="weakness" className="flex cursor-pointer items-center gap-2"><AlertTriangle className="w-4 h-4" /> Weaknesses</TabsTrigger>
                 </TabsList>
                 <TabsContent value="strengths" className="mt-4">
-                  <ul className="space-y-2">
-                    {strengths.map((s, i) => (
-                      <li key={i} className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 mt-0.5 text-emerald-600" /><span className="text-sm leading-relaxed">{s}</span></li>
-                    ))}
-                  </ul>
+                    <motion.ul
+                    variants={listVariants}
+                     initial="hidden"
+                    animate="visible"
+                    className="space-y-2">
+              {strengths.map((s, i) => (
+              <motion.li
+              key={i}
+              variants={itemVariants}
+              className="flex flex-row mt-5  gap-2">
+      <CheckCircle2  className="shrink-0 text-emerald-600" />
+      <span className="text-sm leading-relaxed">{s}</span></motion.li>))}
+              </motion.ul>
                 </TabsContent>
-                <TabsContent value="weakness" className="mt-4">
-                  <ul className="space-y-2">
+                <TabsContent value="weakness" className="mt-4 ">
+                  <motion.ul 
+                  variants={listVariants}
+                   initial="hidden"
+                   animate="visible"
+                  className="space-y-2 ">
                     {weakness.map((w, i) => (
-                      <li key={i} className="flex items-start gap-2"><XCircle className="w-4 h-4 mt-0.5 text-rose-600" /><span className="text-sm leading-relaxed">{w}</span></li>
+                      <motion.li variants={itemVariants} key={i} className="flex mt-5 items-center flex-row gap-2"><XCircle className="shrink-0 text-rose-600" /><span className="text-sm leading-relaxed">{w}</span></motion.li>
                     ))}
-                  </ul>
+                  </motion.ul>
                 </TabsContent>
               </Tabs>
             </CardContent>
@@ -235,4 +314,4 @@ export default function ATSAnalysis() {
   );
 }
 
-
+export default React.memo(ATSAnalysis)

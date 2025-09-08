@@ -17,10 +17,12 @@ class ATSController{
         try{
 
             const {_id:userId}=req.user as {_id:string}
-            const {_id}=req.params 
+            
+            const {id:_id}=req.params 
+         
             const response=await this.atsService.getATSResultService(userId,_id)
             if(!response) return res.status(404).json({message:"Couldn't find any resume matching your criteria"})
-                res.status(200).json(response)
+            res.status(200).json(response)
         }
         catch(err){
             next(err)

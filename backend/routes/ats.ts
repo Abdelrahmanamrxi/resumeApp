@@ -4,6 +4,7 @@ import ATS_Service from '../services/ATS/atsService'
 import authMiddleware from '../middleware/authMiddleware'
 const router=express.Router()
 const atsController=new ATSController(new ATS_Service())
-router.get('/getLatestResults',authMiddleware('user'),atsController.getLatestATSResults.bind(atsController))
+router.get('/results/latest',authMiddleware('user'),atsController.getLatestATSResults.bind(atsController))
+router.get('/results/:id',authMiddleware('user'),atsController.getATSResults.bind(atsController))
 export default router
 

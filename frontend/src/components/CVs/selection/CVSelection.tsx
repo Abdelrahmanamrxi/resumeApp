@@ -29,7 +29,7 @@ function CVSelection({id,title,setTemplate}:SelectionProps):React.JSX.Element {
             defaultData["resumeName"]=resumeName
             defaultData['resumeType']=id
            
-            const response=await api.post('/resume/createResume',defaultData)
+            const response=await api.post('/resume',defaultData)
             const{resumeId,resumeType}=response.data as {resumeId:string,resumeName:string,resumeType:string}
             setLoading(false)
             navigate(`/user/dashboard/resume/${resumeId}?resumeType=${resumeType}&resumeName=${resumeName}`)

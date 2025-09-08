@@ -9,6 +9,7 @@ import AuthDashboard from "./pages/Dashboard/AuthDashboard/AuthDashboard"
 import ResumeAnalyze from "./pages/Dashboard/ResumeAnalyze/ResumeAnalyze"
 import DashboardContent from "./pages/Dashboard/DashboardContent"
 import PricingSection from "./pages/Billing/PricingSection"
+import ATSAnalysis from "./pages/Dashboard/ResumeAnalyze/ATSAnaylsis"
 
 
 
@@ -29,6 +30,7 @@ function App() {
        <Route element={<Dashboard/>}>
         <Route element={<DashboardContent/>} path="/user/dashboard"/>
         <Route element={<ResumeAnalyze/>} path="/user/dashboard/resume-analyze"/>  
+        <Route element={<ATSAnalysis/>} path="/user/dashboard/resume-analyze/:id"/>
         
        </Route>
        </Route>

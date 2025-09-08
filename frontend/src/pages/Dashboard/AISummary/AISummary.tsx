@@ -1,13 +1,13 @@
 
 import {motion} from 'framer-motion'
-import { useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import { fadeUp } from '@/utils/comp'
 import { Sparkles , ChevronRight } from 'lucide-react'
 import { type LatestATSResultsType } from '../DashboardContent'
-import ATSAnalysis from '../ResumeAnalyze/ATSAnaylsis'
+
 
 function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
-  const[checkATSResults,setResults]=useState<boolean>(false)
+  const navigate=useNavigate()
   return (
      <motion.div
         variants={fadeUp}
@@ -17,7 +17,7 @@ function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
       >
         <div className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="h-5 w-5 text-purple-600" />
+            <Sparkles className="h-5 w-5 text-blue-600" />
             <h2 className="text-lg font-semibold"> Latest AI Analysis Summary</h2>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
@@ -35,9 +35,10 @@ function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
               <p className="text-2xl font-bold">{latestResults.recommendations.length}</p>
             </motion.div>
           </div>
-          <motion.button
+          <motion.button 
+            onClick={()=>{navigate(`resume-analyze/${latestResults._id}`)}}
             whileHover={{ x: 4 }}
-            className="mt-4 text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+            className="mt-4 text-sm cursor-pointer text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
           >
             View detailed analysis
             <ChevronRight className="h-3 w-3" />
