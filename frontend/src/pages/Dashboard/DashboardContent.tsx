@@ -76,7 +76,6 @@ const DashboardContent = () => {
     useEffect(()=>{
       setLoading(true)
       Promise.allSettled([FetchAllResumes(),FetchLatestATSResults()]).then((response)=>{
-      
         setData({
           savedResumes:response[0].status==="fulfilled" && response[0].value ? response[0].value:[] ,
           atsResults:response[1].status==="fulfilled"  && response[1].value ? response[1].value : ''
@@ -90,7 +89,7 @@ const DashboardContent = () => {
       })
      
     },[])
-  console.log(data)
+ 
   if(isLoading) return <Loading message='Loading Data..'/>
   return (
        <div className="flex flex-1 mt-5 flex-col gap-4 p-4 pt-0">

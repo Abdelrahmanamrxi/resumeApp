@@ -6,13 +6,13 @@ function generateToken(user:UserModel){
         name:user.fullName,
         role:user.role,
         email:user.email
-    },process.env.ACCESS_TOKEN_SECRET as string,{expiresIn:'1h'})
+    },process.env.ACCESS_TOKEN_SECRET as string,{expiresIn:'4h'})
     const refreshToken=jwt.sign({
         _id:user._id,
         name:user.fullName,
         role:user.role,
         email:user.email
-    },process.env.REFRESH_TOKEN_SECRET as string,{expiresIn:'7d'})
+    },process.env.REFRESH_TOKEN_SECRET as string,{expiresIn:'3d'})
 
     return {accessToken,refreshToken}
 }

@@ -4,6 +4,7 @@ import Hero from './Hero/Hero'
 import HowItWorks from './HowItWorks/HowItWorks'
 import SocialProof from './SocialProof/SocialProof'
 import WhyChoseUs from './WhyChoseUs/WhyChoseUs'
+import Footer from '@/components/layout/Footer/Footer'
 const LandingPage = () => {
 
   return (
@@ -13,6 +14,7 @@ const LandingPage = () => {
         <HowItWorks/>
         <SocialProof/>
         <WhyChoseUs/>
+        <Footer/>
         </div>
   )
 }

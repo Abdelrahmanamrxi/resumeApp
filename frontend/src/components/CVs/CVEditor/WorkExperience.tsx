@@ -2,7 +2,10 @@
 import {motion,AnimatePresence} from 'framer-motion'
 import { fadeInUp,scaleIn } from '../constants/constant';
 import { Briefcase,PlusCircle,Plus,X } from 'lucide-react';
-import { type ResumeData,type ResumeDataArray } from '../interfaces/cvInterface';
+import { type ResumeData,type ResumeDataArray,type Experience } from '../interfaces/cvInterface';
+import React, { useState } from 'react';
+
+
 
 
 interface WorkExperienceProps{
@@ -14,7 +17,30 @@ interface WorkExperienceProps{
   removeBulletPoint:(index:number,pointIndex:number)=>void
 }
 function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperience,updateArrayItem,removeBulletPoint}:WorkExperienceProps) {
-   
+
+    const[localExperience,setExp]=useState<Array<Experience>>(resumeData.experiences)
+
+    const handleLocalChange=(e:React.ChangeEvent<HTMLInputElement>,index:number)=>{
+      const {name,value}=e.target
+      setExp(prev=>prev.map((data,i)=>{
+        if(i===index)
+        return {...data,[name]:value}
+        else return data
+      }))
+    }
+    const handleLocalPointChange=(e:React.ChangeEvent<HTMLInputElement>,index:number,pointIndex:number)=>{
+      const {value}=e.target
+      setExp((prev)=>{
+        return prev.map((exp,i)=>{
+          if(i===index)
+          return {...exp,'points':exp.points.map((point,i)=>{
+          if(i===pointIndex) return value
+          else return point
+        })}
+        return exp
+        })
+      })
+    }
   return (
        <motion.div
           initial="initial"
@@ -57,18 +83,22 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
                 </motion.button>
                 <input
                   type="text"
+                  name='jobTitle'
                   placeholder="Job Title"
-                  value={exp.jobTitle}
-                  onChange={(e) =>
+                  value={localExperience[i]?.jobTitle}
+                  onChange={(e)=>{handleLocalChange(e,i)}}
+                  onBlur={(e) =>
                     updateArrayItem("experiences", i, "jobTitle", e.target.value)
                   }
                   className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
                 />
                 <input
                   type="text"
+                  name="company"
                   placeholder="Company "
-                  value={exp.company}
-                  onChange={(e) =>
+                  value={localExperience[i]?.company}
+                  onChange={(e)=>{handleLocalChange(e,i)}}
+                  onBlur={(e) =>
                     updateArrayItem("experiences", i, "company", e.target.value)
                   }
                   className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
@@ -86,9 +116,11 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
                       >
                         <input
                           type="text"
+                          name='points'
+                          value={localExperience[i]?.points[pi]}
                           placeholder="Bullet Point"
-                          value={point}
-                          onChange={(e) => {
+                          onChange={(e)=>{handleLocalPointChange(e,i,pi)}}
+                          onBlur={(e) => {
                             const updatedPoints = [...exp.points];
                             updatedPoints[pi] = e.target.value;
                             updateArrayItem("experiences", i, "points", updatedPoints);
@@ -124,8 +156,9 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
                   <label className='text-gray-600 mt-2 text-xs mb-2'>From:</label>
                   <input
                   type="Date"
+                  name="from"
                   placeholder="From"
-                  value={exp.from ? new Date(exp.from).toISOString().split("T")[0] : ""}
+                  value={localExperience[i]?.from ? new Date(localExperience[i].from).toISOString().split("T")[0] : ""}
                   onChange={(e) =>
                     updateArrayItem("experiences", i, "from", new Date(e.target.value))
                   }
@@ -137,8 +170,9 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
                   <label className='text-gray-600 mt-2 text-xs mb-2'>To:</label>
                   <input
                   type="Date"
-                  placeholder="From"
-                  value={exp.To ? new Date(exp.To).toISOString().split("T")[0] : ""}
+                  name="To"
+                  placeholder="To"
+                  value={localExperience[i]?.To ? new Date(localExperience[i].To).toISOString().split("T")[0] : ""}
                   onChange={(e) =>
                     updateArrayItem("experiences", i, "To", new Date(e.target.value))
                   }
@@ -165,4 +199,4 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
   )
 }
 
-export default WorkExperience
+export default React.memo(WorkExperience)

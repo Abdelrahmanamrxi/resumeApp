@@ -11,6 +11,7 @@ import ChooseColor from '../CVEditor/ChooseColor';
 import JobDescription from '../CVEditor/JobDescription';
 import SaveInformation from '../CVEditor/SaveInformation';
 import type { ResumeData } from '../interfaces/cvInterface';
+import { Button } from '@/components/ui/button';
 const CVTemplate2 = ({data}:{data:ResumeData}) => {
   const {resumeData,handleChange,newSoftSkill,
     addBulletPoint,removeCertification,
@@ -274,7 +275,9 @@ const CVTemplate2 = ({data}:{data:ResumeData}) => {
       )}
     </div>
   </motion.section>
+  <Button className="px-8 py-2xx hidden md:flex absolute bottom-10 right-10 ">Save Resume</Button>
 </motion.div>
+<Button className="px-8 md:hidden py-2 ">Save Resume</Button>
     </div>
   );
 

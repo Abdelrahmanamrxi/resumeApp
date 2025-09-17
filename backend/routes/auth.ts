@@ -6,7 +6,7 @@ import UserService from '../services/user/userService'
 const router=express.Router()
 const authController=new AuthController()
 const userController=new UserController(new UserService())
-router.get('/refreshToken',authController.refreshToken)
+router.post('/refreshToken',authController.refreshToken)
 router.post('/signup',userController.SignUp.bind(userController))
 router.post('/login',userController.LoginUser.bind(userController))
 router.get('/google',passport.authenticate('google',{scope:['profile','email']}))

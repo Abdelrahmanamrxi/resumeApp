@@ -41,16 +41,16 @@ function ResumeAnalyze() {
     e.preventDefault()
     e.stopPropagation()
     dispatch({type:'SET_DRAG_EVENT',payload:false})
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) 
         handleFileChange(e.dataTransfer.files[0]);
-        }
+        
         }
    const handleFileInput=(e:React.ChangeEvent<HTMLInputElement>)=>{
         e.preventDefault()
         dispatch({type:'SET_ERROR',payload:''})
-        const files = e.target.files  // type: FileList | null
+        const files = e.target.files  
           if (files && files[0]) {
-          handleFileChange(files[0]) // safe, because files is not null
+          handleFileChange(files[0]) 
    }
    }
   
@@ -86,7 +86,7 @@ function ResumeAnalyze() {
     <form onSubmit={handleSubmit} className="w-full justify-center flex flex-col items-center">
        
 
-        {/* Upload Section */}
+      
         <div className="bg-white md:w-3/4  rounded-2xl mt-5 shadow-xl p-8 mb-8">
           <div 
             className={`border-3  rounded-xl p-12 text-center transition-all duration-300 ${

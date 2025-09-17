@@ -1,7 +1,10 @@
 import {motion,AnimatePresence} from 'framer-motion'
 import { fadeInUp } from '../constants/constant';
 import { Code , Plus ,X} from 'lucide-react';
-import { type ResumeData } from '../interfaces/cvInterface';
+import { type ResumeData , type Skills } from '../interfaces/cvInterface';
+import { memo , useState  } from 'react';
+
+
 interface SkillProps{
     newSoftSkill:string,
     setNewSoftSkill:React.Dispatch<React.SetStateAction<string>>,
@@ -15,7 +18,16 @@ interface SkillProps{
 
 
 const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSkill,resumeData,removeSkill}:SkillProps) => {
+  const[softLocalSkill,setLocalSoftSkill]=useState<string>()
+  const[techLocalSkill,setLocalTechSkill]=useState<string>()
+
+  const handlLocalChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const {name,value}=e.target
+    if(name==="softSkills")
+    setLocalSoftSkill(value)
+    else setLocalTechSkill(value)
   
+  }
   return (
    <motion.div
              initial="initial"
@@ -34,8 +46,9 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
                  <input
                    type="text"
                    placeholder="Add technical skill"
-                   value={newTechSkill}
-                   onChange={(e) => setNewTechSkill(e.target.value)}
+                   value={techLocalSkill}
+                   onChange={(e)=>{handlLocalChange(e)}}
+                   onBlur={(e) => setNewTechSkill(e.target.value)}
                    onKeyPress={(e) => {
                      if (e.key === 'Enter') {
                        addSkill('technical', newTechSkill);
@@ -52,7 +65,7 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
                    <Plus size={14} />
                  </motion.button>
                </div>
-               <div className="flex flex-wrap gap-1">
+               <div className="flex flex-row flex-wrap gap-1">
                  <AnimatePresence>
                    {resumeData.skills.technical.map((skill, i) => (
                      <motion.div
@@ -61,7 +74,7 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
                        animate={{ scale: 1, opacity: 1 }}
                        exit={{ scale: 0, opacity: 0 }}
                        whileHover={{ scale: 1.05 }}
-                       className="bg-blue-100 text-blue-700 mt-5 mb-5 px-2 py-0.5 rounded-full text-xs flex items-center gap-1"
+                       className="bg-blue-100 text-blue-700 mt-5 mb-2 px-2 py-0.5 rounded-full text-xs flex items-center gap-1"
                      >
                        {skill}
                        <motion.button
@@ -82,12 +95,14 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
              {/* Soft Skills */}
              <div>
                <label className="block text-xs font-medium text-gray-600 mb-1">Soft Skills</label>
-               <div className="flex gap-1 mb-1">
+               <div className="flex  gap-1 mb-1">
                  <input
                    type="text"
+                   name="softSkills"
                    placeholder="Add soft skill"
-                   value={newSoftSkill}
-                   onChange={(e) => setNewSoftSkill(e.target.value)}
+                   value={softLocalSkill}
+                   onChange={(e)=>{handlLocalChange(e)}}
+                   onBlur={(e) => setNewSoftSkill(e.target.value)}
                    onKeyPress={(e) => {
                      if (e.key === 'Enter') {
                        addSkill('soft', newSoftSkill);
@@ -104,7 +119,7 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
                    <Plus size={14} />
                  </motion.button>
                </div>
-               <div className="flex flex-wrap gap-1">
+               <div className="flex flex-row flex-wrap gap-1">
                  <AnimatePresence>
                    {resumeData.skills.soft.map((skill, i) => (
                      <motion.div
@@ -113,7 +128,7 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
                        animate={{ scale: 1, opacity: 1 }}
                        exit={{ scale: 0, opacity: 0 }}
                        whileHover={{ scale: 1.05 }}
-                       className="bg-green-100 mt-5 mb-5 text-green-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1"
+                       className="bg-green-100  mt-5 mb-4  text-green-700 px-2 py-0.5 rounded-full text-xs flex items-center gap-1"
                      >
                        {skill}
                        <motion.button
@@ -145,4 +160,4 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
   )
 }
 
-export default Skills
+export default memo(Skills)

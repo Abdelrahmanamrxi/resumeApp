@@ -10,6 +10,7 @@ import ResumeAnalyze from "./pages/Dashboard/ResumeAnalyze/ResumeAnalyze"
 import DashboardContent from "./pages/Dashboard/DashboardContent"
 import PricingSection from "./pages/Billing/PricingSection"
 import ATSAnalysis from "./pages/Dashboard/ResumeAnalyze/ATSAnaylsis"
+import SavedAts from "./pages/Dashboard/SavedATS/SavedAts"
 
 
 
@@ -31,6 +32,7 @@ function App() {
         <Route element={<DashboardContent/>} path="/user/dashboard"/>
         <Route element={<ResumeAnalyze/>} path="/user/dashboard/resume-analyze"/>  
         <Route element={<ATSAnalysis/>} path="/user/dashboard/resume-analyze/:id"/>
+        <Route element={<SavedAts/>} path="/user/dashboard/savedats"/>
         
        </Route>
        </Route>

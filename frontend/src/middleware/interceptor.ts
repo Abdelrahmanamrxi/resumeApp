@@ -18,12 +18,12 @@ api.interceptors.response.use(
     async(error)=>{
         const originalRequest=error.config
 
-        if(error.response?.status===401 && !originalRequest._retry&& originalRequest.url !== "api/auth/refreshToken"){
+        if(error.response?.status===401 && !originalRequest._retry&& !originalRequest.url.includes("auth/refreshToken")){
 
             originalRequest._retry=true
             
             try{
-                const response=await api.get('auth/refreshToken')
+                const response=await api.post('auth/refreshToken')
                 const accessToken=response.data.accessToken
                 store.dispatch({type:'auth/setAccessToken',payload:accessToken})
                 

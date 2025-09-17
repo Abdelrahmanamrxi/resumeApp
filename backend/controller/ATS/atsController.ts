@@ -28,5 +28,20 @@ class ATSController{
             next(err)
         }
      }
+     async getAllATS(req:Request,res:Response,next:NextFunction){
+        try{
+            const {_id:userId}=req.user as {_id:string}
+            const response=await this.atsService.getAllATS(userId)
+            if(!response) return res.status(404).json({message:'There are no ATS Scans Found.'})
+                res.status(200).json(response)
+        }
+        catch(err){
+            next(err)
+        }
+     }
+     
+
+
+
 }
 export default ATSController

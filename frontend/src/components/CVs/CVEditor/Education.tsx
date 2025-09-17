@@ -2,7 +2,9 @@
 import {motion,AnimatePresence} from 'framer-motion'
 import { GraduationCap,PlusCircle,X } from 'lucide-react'
 import {fadeInUp,scaleIn } from '../constants/constant'
-import type { ResumeData,ResumeDataArray } from '../interfaces/cvInterface'
+import type { ResumeData,ResumeDataArray, Education } from '../interfaces/cvInterface'
+import  type React  from 'react'
+import { useState,memo } from 'react'
   interface EducationProps{
      addEducation:()=>void,
      resumeData:ResumeData,
@@ -11,7 +13,16 @@ import type { ResumeData,ResumeDataArray } from '../interfaces/cvInterface'
      (section:T,index:number,key:K,value:ResumeData[T][number][K])=>void,
                         }
 function Education({addEducation,resumeData,removeEducation,updateArrayItem}:EducationProps) {
+  const[localEdu,setEdu]=useState<Education[]>(resumeData.education)
 
+  const handleLocalChange=(e:React.ChangeEvent<HTMLInputElement>,index:number)=>{
+    const {name,value}=e.target
+    setEdu(prev=>prev.map((edu,i)=>{
+      if(i===index)
+      return {...edu,[name]:value}
+      else return edu
+    }))
+  }
   return (
       <motion.div
             initial="initial"
@@ -54,18 +65,22 @@ function Education({addEducation,resumeData,removeEducation,updateArrayItem}:Edu
                   </motion.button>
                   <input
                     type="text"
+                    name="degree"
                     placeholder="Degree"
-                    value={edu.degree}
-                    onChange={(e) =>
+                    value={localEdu[i]?.degree}
+                    onChange={(e)=>{handleLocalChange(e,i)}}
+                    onBlur={(e) =>
                       updateArrayItem("education", i, "degree", e.target.value)
                     }
                     className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
                   />
                   <input
                     type="text"
+                    name='institution'
                     placeholder="Institution"
-                    value={edu.institution}
-                    onChange={(e) =>
+                    value={localEdu[i]?.institution}
+                    onChange={(e)=>{handleLocalChange(e,i)}}
+                    onBlur={(e) =>
                       updateArrayItem("education", i, "institution", e.target.value)
                     }
                     className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
@@ -75,6 +90,7 @@ function Education({addEducation,resumeData,removeEducation,updateArrayItem}:Edu
                     <label className='text-gray-600 mt-2 text-xs mb-2'>From:</label>
                   <input
                     type='date'
+                    name="from"
                     placeholder="From"
                     value={edu.from ? new Date(edu.from).toISOString().split("T")[0] : ""}
                     onChange={(e) =>
@@ -87,6 +103,7 @@ function Education({addEducation,resumeData,removeEducation,updateArrayItem}:Edu
                     <label className='text-gray-600 mt-2 text-xs mb-2'>To:</label>
                   <input
                     type='date'
+                    name="To"
                     placeholder="To"
                     value={edu.To ? new Date(edu.To).toISOString().split("T")[0] : ""}
                     onChange={(e) =>
@@ -103,4 +120,4 @@ function Education({addEducation,resumeData,removeEducation,updateArrayItem}:Edu
   )
 }
 
-export default Education
+export default memo(Education)

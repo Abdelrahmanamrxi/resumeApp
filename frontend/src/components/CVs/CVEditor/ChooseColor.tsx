@@ -16,8 +16,6 @@ interface ColorProps {
 
 
 function ChooseColor({addTextColor,addAccentColor}:ColorProps) {
-
-
   return (
     <div>
         <h4 className='font-semibold  mb-2 text-sm flex items-center gap-1'>

@@ -11,6 +11,7 @@ import JobDescription from "../CVEditor/JobDescription";
 import SaveInformation from "../CVEditor/SaveInformation";
 import type { ResumeData } from "../interfaces/cvInterface";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 
 function CVTemplate1({data}:{data:ResumeData}) {
@@ -28,7 +29,7 @@ function CVTemplate1({data}:{data:ResumeData}) {
   
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 p-4 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen font-sans">
+    <div className="flex flex-col md:flex-row gap-4 relative p-4 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen font-sans">
       {/* Editor Panel */}
       <motion.div 
         initial={{ x: -50, opacity: 0 }}
@@ -46,6 +47,7 @@ function CVTemplate1({data}:{data:ResumeData}) {
         <ChooseColor addTextColor={addTextColor} addAccentColor={addAccentColor}/> 
         <JobDescription/>
         <SaveInformation/>
+        
       </motion.div>
 
       {/* Preview Panel */}
@@ -234,7 +236,9 @@ function CVTemplate1({data}:{data:ResumeData}) {
             </div>
           )}
         </motion.section>
+          <Button className="px-8 py-2xx hidden md:flex absolute bottom-10 right-10 ">Save Resume</Button>
       </motion.div>
+     <Button className="px-8 md:hidden py-2 ">Save Resume</Button>
     </div>
   );
 }

@@ -1,4 +1,5 @@
-export interface ATS_SchemaInterface extends Document {
+export interface ATS_SchemaInterface  {
+    _id:string,
     userId:string,
     jobDescription:string,
     fileDetails:{
@@ -32,5 +33,6 @@ export interface ATS_SchemaInterface extends Document {
         wordCount:number,
         pageCount:number,
         metricRecommendation:string
-    }
+    },
+    createdAt:Date
 }

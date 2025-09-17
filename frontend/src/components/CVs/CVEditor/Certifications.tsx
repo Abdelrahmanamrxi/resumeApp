@@ -1,7 +1,9 @@
 import { fadeInUp,scaleIn } from "../constants/constant"
 import {motion,AnimatePresence} from 'framer-motion'
 import { Award,PlusCircle,X } from "lucide-react"
-import type { ResumeData, ResumeDataArray } from "../interfaces/cvInterface"
+import type { ResumeData, ResumeDataArray,  Certification } from "../interfaces/cvInterface"
+import React, { useState } from "react"
+
     interface CertificationProps{
         addCertification:()=>void,
         resumeData:ResumeData,
@@ -10,7 +12,19 @@ import type { ResumeData, ResumeDataArray } from "../interfaces/cvInterface"
         (section:T,index:number,key:K,value:ResumeData[T][number][K])
         =>void
     }
+
+    
 function Certifications({addCertification,resumeData,removeCertification,updateArrayItem}:CertificationProps) {
+    const[localCerti,setCerti]=useState<Certification[]>(resumeData.certifications?? [])
+    
+    const handleLocalChange=(e:React.ChangeEvent<HTMLInputElement>,i:number)=>{
+      const {name,value}=e.target
+      setCerti(prev=>prev.map((cert,index)=>{
+        if(index===i)
+        return {...cert,[name]:value}
+        else return cert
+      }))
+    }
     
   return (
       <motion.div
@@ -53,25 +67,30 @@ function Certifications({addCertification,resumeData,removeCertification,updateA
                     <X size={14} />
                   </motion.button>
                   <input
+                    name="title"
                     type="text"
                     placeholder="Certification Title"
-                    value={cert.title}
-                    onChange={(e) =>
+                    value={localCerti[i]?.title}
+                    onChange={(e)=>{handleLocalChange(e,i)}}
+                    onBlur={(e) =>
                       updateArrayItem("certifications", i, "title", e.target.value)
                     }
                     className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
                   />
                   <input
                     type="text"
+                    name="issuer"
                     placeholder="Issuer"
-                    value={cert.issuer}
-                    onChange={(e) =>
+                    value={localCerti[i]?.issuer}
+                    onChange={(e)=>{handleLocalChange(e,i)}}
+                    onBlur={(e) =>
                       updateArrayItem("certifications", i, "issuer", e.target.value)
                     }
                     className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
                   />
                   <input
                     type="Date"
+                    name="year"
                     placeholder="Year"
                     value={cert.year?new Date(cert.year).toISOString().split('T')[0]:""}
                     onChange={(e) =>
@@ -87,4 +106,4 @@ function Certifications({addCertification,resumeData,removeCertification,updateA
   )
 }
 
-export default Certifications
+export default React.memo(Certifications)

@@ -8,7 +8,6 @@ class ParseService {
             case 'application/pdf':
             const data=await pdf(file)
             return data.text
-            break
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             const result=await mammoth.extractRawText({buffer:file})
             return result.value

@@ -2,13 +2,40 @@ import {motion} from 'framer-motion'
 import { fadeInUp } from '../constants/constant'
 import {Users} from 'lucide-react'
 import { type ResumeData } from '../interfaces/cvInterface'
+import React, { useState } from 'react'
 
 interface BasicInfo {
     resumeData:ResumeData
     handleChange:(field:keyof ResumeData,value:string)=>void
 }
+interface LocalInfo {
+  name: string
+  email: string
+  phone: string
+  linkedin: string
+  location: string,
+  summary:string
+}
+
 
 function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
+  const[basicInfo,setInfo]=useState<LocalInfo>({
+    name:resumeData.name,
+    email:resumeData.email,
+    phone:resumeData.phone,
+    linkedin:resumeData.linkedin,
+    location:resumeData.location,
+    summary:resumeData.summary
+  })
+  const handleLocalChange=(e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>)=>{
+    const {value,name}=e.target
+    setInfo((prev)=>{
+      return {...prev,[name]:value}
+    })
+  }
+  
+
+
   return (
        <motion.div
              initial="initial"
@@ -33,11 +60,11 @@ function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
                      {field}
                    </label>
                    <input
+                     name={field}
                      type="text"
-                     value={resumeData[field as keyof ResumeData] as string}
-                     onChange={(e) =>
-                       handleChange(field as keyof ResumeData, e.target.value)
-                     }
+                     value={basicInfo[field as keyof LocalInfo]}
+                     onChange={handleLocalChange}
+                     onBlur={(e)=>{handleChange(field as keyof ResumeData,e.target.value)}}
                      className="border rounded p-1.5 text-xs w-full focus:ring-2 focus:ring-blue-400 transition-all"
                    />
                    
@@ -52,8 +79,10 @@ function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
              >
                <label className="block text-xs font-medium text-gray-600">Summary</label>
                <textarea
-                 value={resumeData.summary}
-                 onChange={(e) => handleChange("summary", e.target.value)}
+                 name="summary"
+                 value={basicInfo?.summary}
+                 onChange={(e)=>{handleLocalChange(e)}}
+                 onBlur={(e) => handleChange("summary", e.target.value)}
                  className="border rounded p-1.5 text-xs w-full h-16 resize-none focus:ring-2 focus:ring-blue-400 transition-all"
                />
             <button

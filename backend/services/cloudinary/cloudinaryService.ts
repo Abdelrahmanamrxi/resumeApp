@@ -22,6 +22,7 @@ class CloudinaryService {
         result.end(pdfBuffer)
         })
         }
+        
         getSignedURL(public_id:string):string{  
             return cloudinary.url(public_id,{
                 resource_type:'raw',

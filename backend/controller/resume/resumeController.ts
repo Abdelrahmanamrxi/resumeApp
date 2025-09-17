@@ -58,12 +58,13 @@ class ResumeController{
         const {_id}=req.user as {_id:mongoose.Types.ObjectId}
         const {resumeId}=req.params 
         const resumeType=req.query.resumeType as ResumeType 
+
         if(!resumeType) return res.status(400).json({message:"Please provide resume's template"})
         if(!resumeId) return res.status(400).json({message:"Please provide a resume ID to access the resume"})
 
         const response=await this.resumeService.getResumeService(_id,resumeId,resumeType)
 
-        if(!response) return res.status(404).json({message:"Couldn't find Resume Please try again later."})
+        if(!response) return res.status(404).json({message:"Couldn't find resume matching your criteria."})
         res.status(200).json(response)
     }
     async getAllResumes(req:Request,res:Response,next:NextFunction){

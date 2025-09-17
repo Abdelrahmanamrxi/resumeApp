@@ -25,7 +25,7 @@ function WhyChoseUs() {
     }
   ];
   return (
-   <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+   <section className="mt-5 py-20">
   <div className="absolute left-1/2 top-0 -translate-x-1/2 w-32 h-32 bg-blue-200 opacity-20 rounded-full blur-2xl pointer-events-none"></div>
   <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
     <div className="flex flex-col items-center mb-6">

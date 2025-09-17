@@ -24,5 +24,17 @@ class ATS_Service {
             throw new HttpException('Error While Fetching ATS Data')
         }
     }
+    async getAllATS(userId:string | mongoose.Types.ObjectId){
+        try{
+            let ats=await ATS.find({userId})
+            if(ats) return ats
+            else return null
+        }
+        catch(err){
+            throw new HttpException('Internal Server Error')
+        }
+    }
+
+
 }
 export default ATS_Service
