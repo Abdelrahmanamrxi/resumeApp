@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { setAccessToken } from "@/slices/authReducer"
+import { useNavigate } from "react-router-dom"
 import getErrorMessage from '../../utils/errorUtil'
 import { useAppDispatch } from "@/hooks/useReducerHooks"
 import { Input } from "@/components/ui/input"
@@ -33,7 +34,9 @@ export function LoginForm({
       email:'',
       password:''
     })
+
     const dispatch=useAppDispatch()
+    const navigate=useNavigate()
 
     function handleChange(e:React.ChangeEvent<HTMLInputElement>){
       const {name,value}=e.target
@@ -48,6 +51,7 @@ export function LoginForm({
           setCustomError('')
           const response=await Login(formData).unwrap()
           dispatch(setAccessToken(response))
+          navigate('/user/dashboard')
         }
         catch(err){
           setCustomError(getErrorMessage(err))

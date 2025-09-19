@@ -3,6 +3,8 @@ import { fadeInUp } from '../constants/constant'
 import {Users} from 'lucide-react'
 import { type ResumeData } from '../interfaces/cvInterface'
 import React, { useState } from 'react'
+import { useAppDispatch , useSelectorState } from '@/hooks/useReducerHooks'
+import { setLoading,setGlobalError,setDisabled } from '@/slices/resumeReducer'
 
 interface BasicInfo {
     resumeData:ResumeData
@@ -19,6 +21,10 @@ interface LocalInfo {
 
 
 function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
+  const {isLoading,disabled,error}=useSelectorState((state)=>state.resumeState)
+  const dispatch=useAppDispatch()
+  
+  console.log(disabled)
   const[basicInfo,setInfo]=useState<LocalInfo>({
     name:resumeData.name,
     email:resumeData.email,
@@ -86,6 +92,7 @@ function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
                  className="border rounded p-1.5 text-xs w-full h-16 resize-none focus:ring-2 focus:ring-blue-400 transition-all"
                />
             <button
+            disabled={disabled}
             className="mt-1 mb-4 px-3 py-2 text-white text-sm cursor-pointer font-medium 
              bg-gradient-to-r from-blue-500 to-blue-600 
              rounded-lg shadow-md 

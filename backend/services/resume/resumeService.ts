@@ -106,6 +106,16 @@ class ResumeService<T extends ResumeDataInterface>{
             throw new HttpException("Unknown Error While Fetching Resumes")
         }
     }
+       async generateResumeSection(text:string[] | string , jobDescription:string , type:'experience' | 'summary' |'skills'){
+            try{
+                const response=await this.openApiService.generateResumeCompletion(text,jobDescription,type)
+                return response
+            }
+            catch(err){
+                throw new HttpException('Error while generating AI response')
+            }
+    
+        }
 
 
 

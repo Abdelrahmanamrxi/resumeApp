@@ -67,7 +67,7 @@ const SavedAts: React.FC = () => {
   if(isLoading) return <Loading message="Fetching your ATS data..."/>
 
   if(Error) return <p className="flex h-full items-center justify-center text-red-600 font-mono text-bases">{Error}</p>
-
+  
   return (
     <div className="min-h-screen flex ">
       {/* Sidebar */}
@@ -149,7 +149,7 @@ const SavedAts: React.FC = () => {
         </motion.div>
 
         {/* Resume Cards */}
-        <motion.div
+     { resumes.length>0?<motion.div
           className="px-6 pb-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
           animate="visible"
@@ -222,7 +222,13 @@ const SavedAts: React.FC = () => {
             </motion.div>
           ))}
           
-        </motion.div>
+        </motion.div>:
+      <div className="flex items-center justify-center mt-5">
+      <h2 className="text-xl font-semibold text-gray-800">
+      No resume analysis yet
+      </h2>
+      </div>
+      }
       </div>
     </div>
   )

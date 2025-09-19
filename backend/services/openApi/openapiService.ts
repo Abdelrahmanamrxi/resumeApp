@@ -1,5 +1,5 @@
 import OpenAI from "openai"
-import { systemPrompt } from "../../interfaces/atsInterface"
+import { systemPrompt,systemTypePrompts } from "../../interfaces/atsInterface"
 import Groq from "groq-sdk"
 import HttpException from "../../error/Error"
 
@@ -10,6 +10,30 @@ class OpenApiService {
         apiKey:process.env.TESTKEY
     })
     }
+    async generateResumeCompletion(text:string | string[],jobDescription:string, type:'experience' | "summary" | "skills"){
+        const response=await this.groq.chat.completions.create({
+            model:'openai/gpt-oss-120b',
+            max_tokens:500,
+            messages:[
+                {
+                    role:'system',
+                    content:systemTypePrompts[type]
+                },
+                {
+                    role:'user',
+                    content:`Here's the candidate's resume text: ${text} And Here's the Job Description ${jobDescription}, Generate ${type} according to the following job description.`
+                }
+            ],
+        })
+        const content=response.choices[0].message.content
+        if(!content) throw new HttpException("No content returned by the model",500)
+        return JSON.parse(content)
+    }
+
+
+
+
+
     async generateAIAnaylsis(text:string,jobDescription:string){
         const response=await this.groq.chat.completions.create({
             model:'openai/gpt-oss-120b',

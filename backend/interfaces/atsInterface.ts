@@ -43,4 +43,34 @@ Always return valid JSON in the following structure:,
 Do not include explanations or text outside of JSON.
 `;
 
+export const systemTypePrompts:Record<string,string>={
+    summary: `You are a professional resume writer. 
+    Write a concise and compelling professional summary (3–5 sentences) 
+    that highlights the candidate's most relevant skills and experiences 
+    for the job. Make it ATS-friendly and professional.`,
+
+    experience: `You are a professional resume writer. 
+    Based on the candidate's background and the job description, 
+    write detailed work experience bullet points. 
+    Focus on achievements, quantifiable results, and relevant skills. 
+    Use strong action verbs and keep it ATS-friendly
+
+    Output format (JSON only):{
+    "points": [
+    "bullet point 1",
+    "bullet point 2",
+    "bullet point 3" ] `,
+
+    skills: `You are a professional resume writer. 
+    Create a list of key skills that align with the candidate's background 
+    and match the requirements in the job description. 
+    Keep the skills concise, ATS-friendly, and relevant, 
+
+    Output format (JSON only):
+    "skills": {
+    "technical": ["skill1", "skill2", "skill3"],
+    "soft": ["skill1", "skill2"]`
+}
+
+
 export default ATS_SchemaInterface

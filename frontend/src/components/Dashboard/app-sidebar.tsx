@@ -42,13 +42,13 @@ const data = {
   navMain: [
     {
       title: "Analyze Your Resume",
-      url: "#",
+      url: "/user/dashboard/resume-analyze",
       icon: FileUser,
       isActive: true,
     },
     {
-      title: "Saved Resumes",
-      url: "#",
+      title: "Saved ATS Scans",
+      url: "/user/dashboard/savedats",
       icon: SaveAll,
       
     },

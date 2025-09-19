@@ -60,6 +60,7 @@ const DashboardContent = () => {
     const FetchLatestATSResults=async()=>{
       try{
         const response=await api.get('ats/results/latest') 
+        
       
         return { recommendations:response.data.recommendations , foundKeywords:response.data.foundKeywords , matchScore:response.data.matchScore ,_id:response.data._id, missingKeywords:response.data.missingKeywords}  as LatestATSResultsType | ''
       }
@@ -71,7 +72,7 @@ const DashboardContent = () => {
       }
     }
 
-
+    console.log(data?.savedResumes)
 
     useEffect(()=>{
       setLoading(true)
@@ -89,7 +90,7 @@ const DashboardContent = () => {
       })
      
     },[])
- 
+  
   if(isLoading) return <Loading message='Loading Data..'/>
   return (
        <div className="flex flex-1 mt-5 flex-col gap-4 p-4 pt-0">
@@ -147,7 +148,7 @@ const DashboardContent = () => {
       </motion.div>
 
       {/* Your Resumes Section */}
-      { data?.savedResumes && <SavedResumes data={data?.savedResumes}/>}
+      { data?.savedResumes && data?.savedResumes.length>0 && <SavedResumes data={data?.savedResumes}/>}
 
       {/* Templates Preview */}
       <motion.div
@@ -196,7 +197,7 @@ const DashboardContent = () => {
       )}
 
       {/* AI Analysis Summary */}
-     {data?.atsResults&&<AISummary latestResults={data.atsResults}/>}
+     {data?.atsResults && <AISummary latestResults={data.atsResults}/>}
     </div>
   );
 };

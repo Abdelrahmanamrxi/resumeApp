@@ -67,14 +67,7 @@ function SavedResumes({data}:{data:SavedResumesType[] | []}) {
           
 
             {/* Create New Resume */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              className="w-full p-4 border-2 border-dashed rounded-lg hover:border-primary hover:bg-accent transition-all"
-            >
-              <span className="text-sm text-muted-foreground">
-                + Create New Resume
-              </span>
-            </motion.button>
+           
           </div>
         </div>
       </motion.div>

@@ -7,7 +7,7 @@ class ATSController{
             const {_id}=req.user as {_id:string}
             const response=await this.atsService.getLatestATSResults(_id)
             if(response) return res.status(200).json(response)
-            else return res.status(200).json({message:"Get your latest ATS scan matched with your resume today!"})    
+            else return res.status(404).json({})
         }
         catch(err){
             next(err)

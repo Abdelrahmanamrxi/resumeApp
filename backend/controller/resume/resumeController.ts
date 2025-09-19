@@ -70,7 +70,9 @@ class ResumeController{
     async getAllResumes(req:Request,res:Response,next:NextFunction){
         try{
             const {_id}=req.user as {_id:mongoose.Types.ObjectId | string}
+
             const response=await this.resumeService.getAllResumesService(_id)
+
             if(!response) return res.status(404).json({message:"No resumes have been found matching your criteria"})
             res.status(200).json(response)
         }
@@ -78,6 +80,27 @@ class ResumeController{
             next(err)
         }
     }
+    async generateResumeSection(req:Request,res:Response,next:NextFunction){
+        try{
+            const {text,jobDescription,type}=req.body as {text:string | string [] , jobDescription:string, type:'experience' | 'summary' | 'skills'}
+
+            if(!jobDescription) return res.status(400).json({message:"Please provide a job description to match it with your resume."})
+            if(!type) return res.status(400).json({message:'Please provide a type which you want to generate for'})
+
+            const response=await this.resumeService.generateResumeSection(text,jobDescription,type)
+            
+        
+            
+            res.status(200).json(response)
+
+        }
+        catch(err){
+            next(err)
+        }
+
+
+    }
+
 
 
 

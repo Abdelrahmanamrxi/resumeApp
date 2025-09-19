@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 
 import {
   BadgeCheck,
-  Bell,
+  
   ChevronsUpDown,
   CreditCard,
   LogOut,
@@ -100,19 +100,16 @@ export function NavUser({
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+           
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem >
-              <LogOut />
-              <button className="cursor-pointer" onClick={()=>{
+              
+              <button className="cursor-pointer gap-2 flex flex-row items-center" onClick={()=>{
                 dispatch(removeAccessToken())
                 navigate('/')
 
-              }}>Logout </button>
+              }}> <LogOut /> Logout </button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -12,13 +12,19 @@ import  {setAccessToken, type SignUpInterface} from "@/slices/authReducer"
 import { Eye, EyeOff } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useReducerHooks"
 import {useSignUpMutation} from "@/slices/authServiceReducer"
+import { useNavigate } from "react-router-dom"
+
+
  function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
   const dispatch=useAppDispatch()
+  const navigate=useNavigate()
+
   const [customError,setCustomError]=useState<string>("")
   const [showPassword, setShowPassword] = useState(false);
+
   const[SignUp,{isLoading}]=useSignUpMutation()
   
   
@@ -39,6 +45,7 @@ import {useSignUpMutation} from "@/slices/authServiceReducer"
      setCustomError("")
      const response=await SignUp(data).unwrap()
      dispatch(setAccessToken(response))
+     navigate('/user/dashboard')
     }
     catch(err:unknown){
     if (typeof err === "object" && err !== null && "data" in err) {

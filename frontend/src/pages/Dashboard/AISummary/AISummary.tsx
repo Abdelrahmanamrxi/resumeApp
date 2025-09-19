@@ -6,6 +6,7 @@ import { Sparkles , ChevronRight } from 'lucide-react'
 import { type LatestATSResultsType } from '../DashboardContent'
 
 
+
 function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
   const navigate=useNavigate()
   return (
