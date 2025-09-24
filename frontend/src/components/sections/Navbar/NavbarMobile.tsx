@@ -5,13 +5,25 @@ import { ChevronRightIcon } from 'lucide-react'
 import components from '@/utils/comp'
 import { Link } from 'react-router-dom'
 import logo from '../../../assets/CATALYx.png'
+import { useNavigate,useLocation } from 'react-router-dom'
 import type React from 'react'
+import { useEffect } from 'react'
 type Props={
     isOpen:boolean
     featuresOpen:boolean,
     setFeatures:React.Dispatch<React.SetStateAction<boolean>>
+    setIsOpen:React.Dispatch<React.SetStateAction<boolean>>
 }
-const NavbarMobile = ({isOpen,featuresOpen,setFeatures}:Props) => {
+const NavbarMobile = ({isOpen,featuresOpen,setFeatures,setIsOpen}:Props) => {
+  const location=useLocation()
+  const navigate=useNavigate()
+  
+  useEffect(()=>{
+    setIsOpen(false)
+  },[location.pathname])
+
+
+
   return (
    <AnimatePresence>
    
@@ -34,12 +46,19 @@ const NavbarMobile = ({isOpen,featuresOpen,setFeatures}:Props) => {
                 
 
                 {/* Auth Buttons */}
-                <Button className="mt-14">Sign In</Button>
-                <Button variant="secondary">Sign Up</Button>
+                <Button
+                onClick={()=>{navigate('/login')}}
+                 className="mt-14 cursor-pointer">Sign In</Button>
+                <Button 
+                className='cursor-pointer'
+                onClick={()=>{navigate('/signup')}}
+                
+                variant="outline">Sign Up</Button>
 
                 {/* Nav Links */}
                 <nav className="mt-5 text-lg">
                   <ul className="flex flex-col gap-4 ">
+                    <li onClick={()=>{navigate('/')}} className='list cursor-pointer mt-5'>Home</li>
                     <li 
                      onClick={()=>{setFeatures(!featuresOpen)}}
                     className="flex cursor-pointer 0 flex-row items-center justify-between">
@@ -52,19 +71,21 @@ const NavbarMobile = ({isOpen,featuresOpen,setFeatures}:Props) => {
                       
                     </li>
                       {featuresOpen && (
+                        <>
+                       
                         <AnimatePresence mode="wait">
-
+              
                         <li className="flex mt-3 gap-5  flex-col">
                           {components.map((comp)=>{
                             return(
-                              <motion.div
+                            <motion.div
                              initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                             animate={{ opacity: 1 }}
+                             exit={{ opacity: 0 }}
                             transition={{
                             duration: 0.5,
                             ease: [0.25, 0.1, 0.25, 1] // ease-in-out cubic-bezier
-                              }}  
+                          }}  
                                className="flex gap-3 flex-col border border-white p-5 rounded-md">
                               <Link className="font-medium text-md" to={comp.to}>{comp.title}</Link>
                               <p className="text-sm mb-2 font-thin ">{comp.description}</p>
@@ -74,8 +95,10 @@ const NavbarMobile = ({isOpen,featuresOpen,setFeatures}:Props) => {
                           })}
                           </li>
                             </AnimatePresence>
+                          </>
                         )}
-                        <li className="list">
+                        
+                        <li onClick={()=>{navigate('/billing')}} className="list">
                           Pricing
                         </li>
                         <li className="list">
@@ -85,7 +108,7 @@ const NavbarMobile = ({isOpen,featuresOpen,setFeatures}:Props) => {
                 </nav>
              <img className={`w-32 h-32  invert ${featuresOpen?'relative':'absolute'} bottom-0`} src={logo}/>   
               </motion.div>
-                           
+              
             )}
           </AnimatePresence>
   )

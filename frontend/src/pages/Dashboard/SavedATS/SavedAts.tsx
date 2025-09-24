@@ -13,6 +13,13 @@ import {
 import { AxiosError, type AxiosResponse } from "axios"
 import type { ATS_SchemaInterface } from "@/interfaces"
 import { useNavigate } from "react-router-dom"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 
 
@@ -33,7 +40,8 @@ interface Resume {
 const SavedAts: React.FC = () => {
   const [resumes, setResumes] = useState<Resume[]>([])
   const[Error,setError]=useState<string>()
-  const[isLoading,setLoading]=useState<boolean>()
+  const[isLoading,setLoading]=useState<boolean>(false)
+  const[filter,setFilter]=useState<string>('none')
 
   const navigate=useNavigate()
 
@@ -49,8 +57,12 @@ const SavedAts: React.FC = () => {
       setLoading(false)
     }
     catch(err){
-      if(err instanceof AxiosError && err.response)
-      setError(err.response.data.message)
+      if(err instanceof AxiosError && err.response){
+        if(err.code==="ERR_NETWORK") 
+        setError('[NETWORK ERROR] : Connecting Lost, Please try again Later.')
+        else 
+        setError(err.response.data.message)
+      }
       setLoading(false)
 
     }
@@ -58,11 +70,31 @@ const SavedAts: React.FC = () => {
       setLoading(false)
     }
   }
-
+ 
 
   useEffect(() => {
         fetchUserATS()
   }, [])
+  useEffect(()=>{
+    filterResumes()
+  },[filter])
+  
+    function filterResumes(){
+      if(filter==="score"){
+      const sortedResumes=[...resumes].sort((a,b)=>b.matchScore-a.matchScore)
+      setResumes(sortedResumes)
+      }
+      if(filter==="new"){
+        const sortedResumes=[...resumes].sort((a,b)=>new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime())
+        setResumes(sortedResumes)
+      }
+        if(filter==="none"){
+        const sortedResumes=[...resumes].sort((a,b)=>new Date(a.createdAt).getTime()-new Date(b.createdAt).getTime())
+        setResumes(sortedResumes)
+      }
+    }
+
+
 
   if(isLoading) return <Loading message="Fetching your ATS data..."/>
 
@@ -89,6 +121,21 @@ const SavedAts: React.FC = () => {
           <p className="text-gray-500 mt-1">
          
           </p>
+          <div className="gap-2 flex flex-row mt-5">
+
+          
+        <Select  onValueChange={(value)=>{setFilter(value)}}>
+        <SelectTrigger className="">
+      <SelectValue placeholder="Filter by" />
+      </SelectTrigger>
+      <SelectContent>
+      <SelectItem value="none">None</SelectItem>
+      <SelectItem value="score">Score</SelectItem>
+      <SelectItem value="new">New</SelectItem>
+      </SelectContent>
+      </Select>
+        
+          </div>
         </motion.div>
 
         {/* Stats */}

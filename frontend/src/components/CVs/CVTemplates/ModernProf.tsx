@@ -11,7 +11,7 @@ import ChooseColor from '../CVEditor/ChooseColor';
 import JobDescription from '../CVEditor/JobDescription';
 import SaveInformation from '../CVEditor/SaveInformation';
 import type { ResumeData } from '../interfaces/cvInterface';
-import { Button } from '@/components/ui/button';
+
 const CVTemplate2 = ({data}:{data:ResumeData}) => {
   const {resumeData,handleChange,newSoftSkill,
     addBulletPoint,removeCertification,
@@ -19,7 +19,7 @@ const CVTemplate2 = ({data}:{data:ResumeData}) => {
     addExperience,removeExperience,updateArrayItem,
     addEducation,newTechSkill,setNewSoftSkill,setNewTechSkill,
     addSkill,removeSkill,
-    removeEducation,addAccentColor,addTextColor}=useResumeData(data)
+    removeEducation,addAccentColor,addTextColor,setResumeData,stringifiedFields}=useResumeData(data)
 
   return (
      <div className="flex flex-col md:flex-row gap-4 p-4 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen font-sans">
@@ -38,14 +38,14 @@ const CVTemplate2 = ({data}:{data:ResumeData}) => {
 
         <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill} 
         setNewTechSkill={setNewTechSkill} setNewSoftSkill={setNewSoftSkill}
-        addSkill={addSkill} removeSkill={removeSkill}
+        addSkill={addSkill} removeSkill={removeSkill} setResumeData={setResumeData}
         
         />
         <ChooseColor addTextColor={addTextColor} addAccentColor={addAccentColor}/>
         
         <JobDescription/>
         
-        <SaveInformation/>
+        <SaveInformation stringifiedFields={stringifiedFields} resumeData={resumeData} />
       </motion.div>
 
 <motion.div
@@ -275,9 +275,9 @@ const CVTemplate2 = ({data}:{data:ResumeData}) => {
       )}
     </div>
   </motion.section>
-  <Button className="px-8 py-2xx hidden md:flex absolute bottom-10 right-10 ">Save Resume</Button>
+  
 </motion.div>
-<Button className="px-8 md:hidden py-2 ">Save Resume</Button>
+
     </div>
   );
 

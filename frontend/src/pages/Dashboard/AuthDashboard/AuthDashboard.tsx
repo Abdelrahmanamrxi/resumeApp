@@ -3,6 +3,9 @@ import { Outlet } from "react-router-dom"
 import { useEffect } from "react"
 
 function AuthDashboard() {
+
+
+  
     const accessToken=localStorage.getItem('token')
     const navigate=useNavigate()
     useEffect(()=>{

@@ -6,6 +6,7 @@ class ModernColumn<T extends ResumeDataInterface> implements TemplateProduct {
     }
     
     private generateExperienceItems(): string {
+        
         if (!this.resumeData.experiences || this.resumeData.experiences.length === 0) {
             return '';
         }
@@ -16,7 +17,7 @@ class ModernColumn<T extends ResumeDataInterface> implements TemplateProduct {
                     <div class="job-title">${exp.jobTitle}</div>
                     <div class="experience-header">
                         <div class="company-name">${exp.company}</div>
-                        <div class="experience-date">${exp.from.toLocaleDateString("en-US",{month:'short',year:'numeric'})} - ${exp.To.toLocaleDateString('en-US',{month:'short',year:'numeric'})}</div>
+                        <div class="experience-date">${new Date(exp.from).toLocaleDateString("en-US",{month:'short',year:'numeric'})} - ${new Date(exp.To).toLocaleDateString('en-US',{month:'short',year:'numeric'})}</div>
                     </div>
                     <ul class="experience-points">
                         ${exp.points.filter(p => p).map(point => `
@@ -41,9 +42,9 @@ class ModernColumn<T extends ResumeDataInterface> implements TemplateProduct {
                 <div class="degree">${edu.degree}</div>
                 <div class="institution">${edu.institution}</div>
                 <div class="education-dates">
-                    <span class="date-from">${edu.from.toLocaleDateString("en-US",{month:'short',year:'numeric'})}</span>
+                    <span class="date-from">${new Date(edu.from).toLocaleDateString("en-US",{month:'short',year:'numeric'})}</span>
                     <span class="date-separator">-</span>
-                    <span class="date-to">${edu.To.toLocaleDateString("en-US",{month:'short',year:'numeric'})}</span>
+                    <span class="date-to">${new Date(edu.To).toLocaleDateString("en-US",{month:'short',year:'numeric'})}</span>
                 </div>
             </div>
         `).join('');

@@ -21,7 +21,7 @@ const authMiddleware=(...allowedRoles:string[])=>{
     }
     }      
     catch(err){
-        console.log(err)
+        
         return next(new HttpException('Unknown Error Please try again later.',401))
     } 
         

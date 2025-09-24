@@ -8,7 +8,7 @@ import Skills from '../CVEditor/Skills'
 import JobDescription from '../CVEditor/JobDescription'
 import SaveInformation from '../CVEditor/SaveInformation'
 import type { ResumeData } from '../interfaces/cvInterface'
-import { Button } from '@/components/ui/button'
+
 
 const CVTemplate4 = ({data}:{data:ResumeData}) => {
         const {resumeData,handleChange,newSoftSkill,
@@ -17,7 +17,7 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
         addExperience,removeExperience,updateArrayItem,
         addEducation,newTechSkill,setNewSoftSkill,setNewTechSkill,
         addSkill,removeSkill,
-        removeEducation}=useResumeData(data)
+        removeEducation,setResumeData,stringifiedFields}=useResumeData(data)
 
 
 
@@ -31,15 +31,21 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
                 className="w-full md:w-2/5 space-y-4 bg-white p-4 rounded-lg shadow-lg overflow-y-auto max-h-[calc(100vh-2rem)]"
               >
                 <BasicInfoSection resumeData={resumeData} handleChange={handleChange}/>
+
                 <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
+
+
                 <Education resumeData={resumeData} addEducation={addEducation} removeEducation={removeEducation} updateArrayItem={updateArrayItem}/>
+
                 <Certifications resumeData={resumeData} addCertification={addCertification} updateArrayItem={updateArrayItem} removeCertification={removeCertification} />
+
                 <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill} 
                 setNewTechSkill={setNewTechSkill} setNewSoftSkill={setNewSoftSkill}
-                addSkill={addSkill} removeSkill={removeSkill}
+                addSkill={addSkill} removeSkill={removeSkill} setResumeData={setResumeData}
                 />
+
                 <JobDescription/>
-                <SaveInformation/>
+                <SaveInformation stringifiedFields={stringifiedFields} resumeData={resumeData}/>
               
               </motion.div>
 
@@ -205,9 +211,9 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
           </div>
         </motion.section>
       )}
-       <Button className="px-8 py-2xx hidden md:flex absolute bottom-10 right-10 ">Save Resume</Button>
+       
     </motion.div>
-     <Button className="px-8 md:hidden py-2 ">Save Resume</Button>
+     
     </div>
   )
 }

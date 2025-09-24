@@ -2,12 +2,13 @@
 import Navbar from '@/components/sections/Navbar/Navbar'
 import logo from '../../../assets/CATALYx.png'
 import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 
 const Header = () => {
+  const navigate=useNavigate()
   return (
     <div className='flex flex-row  p-4 items-center w-full justify-between'>
-      <img className="lg:w-1/8  md:w-1/5 w-1/4"  src={logo}/>
+      <img onClick={()=>{navigate('/')}} className="lg:w-1/8 cursor-pointer md:w-1/5 w-1/4"  src={logo}/>
       <Navbar/>
          <div className='lg:flex hidden  flex-row gap-4'>
           <Button className='px-5 cursor-pointer '>

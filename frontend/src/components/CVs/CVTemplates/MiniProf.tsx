@@ -10,7 +10,7 @@ import ChooseColor from '../CVEditor/ChooseColor'
 import JobDescription from '../CVEditor/JobDescription'
 import SaveInformation from '../CVEditor/SaveInformation'
 import type { ResumeData } from '../interfaces/cvInterface'
-import { Button } from '@/components/ui/button'
+
 function CVTemplate3({data}:{data:ResumeData}) {
 
       const {resumeData,handleChange,newSoftSkill,
@@ -20,7 +20,8 @@ function CVTemplate3({data}:{data:ResumeData}) {
         addEducation,newTechSkill,setNewSoftSkill,setNewTechSkill,
         addSkill,removeSkill,
         removeEducation,
-        addAccentColor,addTextColor
+        addAccentColor,addTextColor,
+        setResumeData,stringifiedFields
     
             }=useResumeData(data)
            
@@ -39,13 +40,13 @@ function CVTemplate3({data}:{data:ResumeData}) {
         <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
         <Education resumeData={resumeData} addEducation={addEducation} removeEducation={removeEducation} updateArrayItem={updateArrayItem}/>
         <Certifications resumeData={resumeData} addCertification={addCertification} updateArrayItem={updateArrayItem} removeCertification={removeCertification} />
-        <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill} 
+        <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill}  setResumeData={setResumeData}
         setNewTechSkill={setNewTechSkill} setNewSoftSkill={setNewSoftSkill}
         addSkill={addSkill} removeSkill={removeSkill}
         />
         <ChooseColor addTextColor={addTextColor} addAccentColor={addAccentColor}/>
         <JobDescription/>
-        <SaveInformation/>
+        <SaveInformation stringifiedFields={stringifiedFields} resumeData={resumeData}/>
     
       </motion.div>
 
@@ -273,9 +274,9 @@ function CVTemplate3({data}:{data:ResumeData}) {
           </div>
         )}
       </motion.section>
-        <Button className="px-8 py-2xx hidden md:flex absolute bottom-10 right-10 ">Save Resume</Button>
+        
     </motion.div>
-    <Button className="px-8 md:hidden py-2 ">Save Resume</Button>
+    
     </div>
   )
 }

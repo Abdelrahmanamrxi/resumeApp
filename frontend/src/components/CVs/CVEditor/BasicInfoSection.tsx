@@ -1,10 +1,11 @@
 import {motion} from 'framer-motion'
 import { fadeInUp } from '../constants/constant'
-import {Users} from 'lucide-react'
+import {Users,Loader} from 'lucide-react'
 import { type ResumeData } from '../interfaces/cvInterface'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppDispatch , useSelectorState } from '@/hooks/useReducerHooks'
-import { setLoading,setGlobalError,setDisabled } from '@/slices/resumeReducer'
+import { generateSection, setGlobalError } from '@/slices/resumeReducer'
+
 
 interface BasicInfo {
     resumeData:ResumeData
@@ -21,10 +22,9 @@ interface LocalInfo {
 
 
 function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
-  const {isLoading,disabled,error}=useSelectorState((state)=>state.resumeState)
+  const {isLoading,disabled,error,jobDescription}=useSelectorState((state)=>state.resumeState)
   const dispatch=useAppDispatch()
-  
-  console.log(disabled)
+
   const[basicInfo,setInfo]=useState<LocalInfo>({
     name:resumeData.name,
     email:resumeData.email,
@@ -39,8 +39,22 @@ function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
       return {...prev,[name]:value}
     })
   }
-  
 
+  const generateSummary=async()=>{
+   const response=await dispatch(generateSection({jobDescription,text:basicInfo.summary,type:'summary'})).unwrap()
+   setInfo((prev)=>{
+    return {...prev,summary:response}
+   })
+  }
+  
+  useEffect(()=>{
+    if(error["summary"]){
+         const timer = setTimeout(() => {
+        dispatch(setGlobalError({type:'summary',value:''}))  // dispatch an action to reset error
+    }, 2000)
+    return () => clearTimeout(timer)
+    }
+  },[error['summary']])
 
   return (
        <motion.div
@@ -93,15 +107,25 @@ function BasicInfoSection({resumeData,handleChange}:BasicInfo) {
                />
             <button
             disabled={disabled}
-            className="mt-1 mb-4 px-3 py-2 text-white text-sm cursor-pointer font-medium 
+            onClick={generateSummary}
+            className="mt-3 mb-4 px-3 py-2 text-white text-sm cursor-pointer font-medium 
              bg-gradient-to-r from-blue-500 to-blue-600 
              rounded-lg shadow-md 
              hover:from-blue-600 hover:to-blue-700 
              active:scale-95 
              transition-all duration-300 ease-in-out">
-              Generate Professional Summary </button>
+              {!isLoading.summary?"Generate Professional Summary":(
+                <p className='flex flex-row gap-2 items-center'>Generating.. <Loader className='animate-spin'/></p>
+              )} </button>
+             {error['summary'] &&
+             <motion.p 
+             initial={{opacity:0 }}
+             animate={{opacity:1}}
+             
+             className='errorMessage'>{error.summary}</motion.p>}
              </motion.div>
            </motion.div>
+           
   )
 }
 

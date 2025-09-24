@@ -1,11 +1,19 @@
 import { useState } from "react"
 import type { ResumeData,ResumeDataArray } from "@/components/CVs/interfaces/cvInterface"
+import {diff} from 'deep-object-diff'
+
 const useResumeData = (initialData:ResumeData) => {
       const [resumeData, setResumeData] = useState<ResumeData>(initialData);
       const [newTechSkill, setNewTechSkill] = useState("");
       const [newSoftSkill, setNewSoftSkill] = useState("");
+
+      const changedFields=diff(initialData,resumeData)
+      const stringifiedFields=JSON.stringify(changedFields) // track changed fields once resume data is fetched
+      console.log(stringifiedFields)
     
+      
       // handles basic info fields ex name phone links etc
+
       const handleChange = (field: keyof ResumeData, value: string) => {
         setResumeData((prev) => ({ ...prev, [field]: value }));
       };
@@ -80,18 +88,30 @@ const useResumeData = (initialData:ResumeData) => {
         }));
       };
     
-      const addSkill = (type: 'technical' | 'soft', skill: string) => {
-        if (skill.trim()) {
+      const addSkill = (type: 'technical' | 'soft', skill: string | string[]) => {
+        if (!Array.isArray(skill)) {
           setResumeData((prev) => ({
             ...prev,
             skills: {
               ...prev.skills,
-              [type]: [...prev.skills[type], skill.trim()],
+              [type]: [...prev.skills[type], skill],
             },
           }));
           if (type === 'technical') setNewTechSkill("");
           else setNewSoftSkill("");
         }
+        else{
+          setResumeData((prev)=>{
+            return {...prev,skills:{
+              ...prev.skills,
+            [type]:prev.skills
+            }}
+             
+          }
+        )
+          
+        }
+       
       };
     
       const removeSkill = (type: 'technical' | 'soft', index: number) => {
@@ -138,7 +158,11 @@ const useResumeData = (initialData:ResumeData) => {
     setNewTechSkill,
     setNewSoftSkill,
     addTextColor,
-    addAccentColor
+    addAccentColor,
+    setResumeData,
+    stringifiedFields
+    
+    
   }
 }
 

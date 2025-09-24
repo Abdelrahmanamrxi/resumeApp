@@ -30,6 +30,8 @@ export interface Colors {
 }
 
 export interface ResumeData {
+  _id?:string
+  userId?:string
   name: string;
   email: string;
   phone: string;
@@ -43,7 +45,9 @@ export interface ResumeData {
   color:Colors,
   resumeName?:string,
   resumeLink?:string
-  resumeType?: ResumeType
+  resumeType?: ResumeType,
+  createdAt?:Date,
+  updatedAt?:Date
 }
 export type ResumeType =
   | "modernMinimalist"

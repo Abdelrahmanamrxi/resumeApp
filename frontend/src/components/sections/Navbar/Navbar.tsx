@@ -45,14 +45,9 @@ export function Navbar() {
               asChild
               className={navigationMenuTriggerStyle()}
             >
-              <Link to="/pricing">Pricing</Link>
+              <Link to="/billing">Pricing</Link>
             </NavigationMenuLink>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link to="/templates">Templates</Link>
-            </NavigationMenuLink>
+          
             <NavigationMenuLink
               asChild
               className={navigationMenuTriggerStyle()}
@@ -103,7 +98,7 @@ export function Navbar() {
           
         </>
       )}
-      <NavbarMobile isOpen={isOpen} featuresOpen={featuresOpen} setFeatures={setFeatures}/>
+      <NavbarMobile setIsOpen={setIsOpen} isOpen={isOpen} featuresOpen={featuresOpen} setFeatures={setFeatures}/>
     </div>
   )
 

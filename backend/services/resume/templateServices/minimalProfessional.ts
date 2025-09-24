@@ -17,7 +17,7 @@ class MinimalProfessional<T extends ResumeInterface> implements TemplateProduct 
                 </div>
                 <div class="company-date-row">
                     <div class="company-name" style="color: ${getColor(this.resumeData.color.textColor, 700)}">${exp.company}</div>
-                    <p class="date-range">${exp.from.toLocaleDateString("en-US",{month:'short',year:"numeric"})} - ${exp.To.toLocaleDateString("en-US",{month:'short',year:"numeric"})}</p>
+                    <p class="date-range">${new Date(exp.from).toLocaleDateString("en-US",{month:'short',year:"numeric"})} - ${new Date(exp.To).toLocaleDateString("en-US",{month:'short',year:"numeric"})}</p>
                 </div>
                 <ul class="experience-points">
                     ${exp.points.filter(p => p).map(point => `
@@ -42,7 +42,7 @@ class MinimalProfessional<T extends ResumeInterface> implements TemplateProduct 
                     <strong style="color: ${getColor(this.resumeData.color.textColor, 800)}">${edu.degree}</strong><br>
                     <span style="color: ${getColor(this.resumeData.color.textColor, 600)}">${edu.institution}</span>
                 </p>
-                <p class="date-range">${edu.from.toLocaleDateString("en-US",{month:'short',year:"numeric"})} - ${edu.To.toLocaleDateString("en-US",{month:'short',year:"numeric"})}</p>
+                <p class="date-range">${new Date(edu.from).toLocaleDateString("en-US",{month:'short',year:"numeric"})} - ${new Date(edu.To).toLocaleDateString("en-US",{month:'short',year:"numeric"})}</p>
             </div>
         `).join('');
     }

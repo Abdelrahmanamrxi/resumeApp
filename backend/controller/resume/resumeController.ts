@@ -9,8 +9,12 @@ class ResumeController{
     async generatePDF(req:Request,res:Response,next:NextFunction){
         try{
             const resumeData=req.body as ResumeDataInterface
-            const filePath=await this.resumeService.SavePDFService(resumeData)
-            res.status(201).json({filePath})
+            const {userId}=req.user as {userId:mongoose.Types.ObjectId | string}
+            const file=await this.resumeService.downloadPDFService(resumeData,userId)
+            
+            res.setHeader('Content-Type','application/pdf')
+            res.setHeader('Content-Disposition',`attachement; filename:${resumeData.resumeName}`)
+            res.end(file)
         }
         catch(err){
             next(err)
@@ -83,14 +87,34 @@ class ResumeController{
     async generateResumeSection(req:Request,res:Response,next:NextFunction){
         try{
             const {text,jobDescription,type}=req.body as {text:string | string [] , jobDescription:string, type:'experience' | 'summary' | 'skills'}
-
+            
             if(!jobDescription) return res.status(400).json({message:"Please provide a job description to match it with your resume."})
             if(!type) return res.status(400).json({message:'Please provide a type which you want to generate for'})
 
             const response=await this.resumeService.generateResumeSection(text,jobDescription,type)
             
-        
-            
+            res.status(200).json(response)
+
+        }
+        catch(err){
+           
+            next(err)
+        }
+
+
+    }
+
+    async SaveResume(req:Request,res:Response,next:NextFunction){
+        try{
+            const changedFields=req.body as string | object
+            if(!changedFields) return res.status(400).json({message:'No changes has been made.'})
+            const {resumeId:_id}=req.params
+            const {_id:userId}=req.user as {_id:mongoose.Types.ObjectId | string}
+
+            if(!_id || !userId) return res.status(400).json({message:'Bad Request Please Provide User ID and Resume ID '})
+
+            const response=await this.resumeService.SaveResumeService(changedFields,userId,_id)
+
             res.status(200).json(response)
 
         }
@@ -98,10 +122,7 @@ class ResumeController{
             next(err)
         }
 
-
     }
-
-
 
 
 }

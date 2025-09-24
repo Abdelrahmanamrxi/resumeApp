@@ -11,7 +11,7 @@ import JobDescription from "../CVEditor/JobDescription";
 import SaveInformation from "../CVEditor/SaveInformation";
 import type { ResumeData } from "../interfaces/cvInterface";
 import React from "react";
-import { Button } from "@/components/ui/button";
+
 
 
 function CVTemplate1({data}:{data:ResumeData}) {
@@ -22,7 +22,8 @@ function CVTemplate1({data}:{data:ResumeData}) {
     addEducation,newTechSkill,setNewSoftSkill,setNewTechSkill,
     addSkill,removeSkill,
     removeEducation,
-    addAccentColor,addTextColor
+    addAccentColor,addTextColor,
+    setResumeData,stringifiedFields
 
   }=useResumeData(data)
  
@@ -38,15 +39,25 @@ function CVTemplate1({data}:{data:ResumeData}) {
         className="w-full md:w-2/5 space-y-4 bg-white p-4 rounded-lg shadow-lg overflow-y-auto max-h-[calc(100vh-2rem)]"
       >
         <BasicInfoSection resumeData={resumeData} handleChange={handleChange}/>
-        <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
+        
+        <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} 
+        addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
+
         <Education resumeData={resumeData} addEducation={addEducation} removeEducation={removeEducation} updateArrayItem={updateArrayItem}/>
+
+
+
         <Certifications resumeData={resumeData} addCertification={addCertification} updateArrayItem={updateArrayItem} removeCertification={removeCertification} />
-        <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill} 
+
+        <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill} setResumeData={setResumeData}
         setNewTechSkill={setNewTechSkill} setNewSoftSkill={setNewSoftSkill}
         addSkill={addSkill} removeSkill={removeSkill} /> 
+        
         <ChooseColor addTextColor={addTextColor} addAccentColor={addAccentColor}/> 
+
         <JobDescription/>
-        <SaveInformation/>
+
+        <SaveInformation stringifiedFields={stringifiedFields} resumeData={resumeData}/>
         
       </motion.div>
 
@@ -101,7 +112,7 @@ function CVTemplate1({data}:{data:ResumeData}) {
           <h2
           style={{ color: getColor(resumeData.color.textColor, 700),borderColor: getColor(resumeData.color.accentColor,600) }} 
           className={`text-sm font-bold ${resumeData.experiences.length>0?"border-b-2":""}  pb-1 mb-2 `}>
-          {resumeData.experiences.length>0?'Work Expiernece':''}
+          {resumeData.experiences.length>0?'Work Experience':''}
           </h2>
           <AnimatePresence>
             {resumeData.experiences.map((exp, i) => (
@@ -236,9 +247,9 @@ function CVTemplate1({data}:{data:ResumeData}) {
             </div>
           )}
         </motion.section>
-          <Button className="px-8 py-2xx hidden md:flex absolute bottom-10 right-10 ">Save Resume</Button>
+       
       </motion.div>
-     <Button className="px-8 md:hidden py-2 ">Save Resume</Button>
+    
     </div>
   );
 }

@@ -21,14 +21,15 @@ class OpenApiService {
                 },
                 {
                     role:'user',
-                    content:`Here's the candidate's resume text: ${text} And Here's the Job Description ${jobDescription}, Generate ${type} according to the following job description.`
+                    content:`Here's the candidate's resume text: ${text} And Here's the Job Description ${jobDescription}, Generate ${type} according to the following job description`
                 }
             ],
         })
         const content=response.choices[0].message.content
-        if(!content) throw new HttpException("No content returned by the model",500)
-        return JSON.parse(content)
+        
+        return content
     }
+
 
 
 

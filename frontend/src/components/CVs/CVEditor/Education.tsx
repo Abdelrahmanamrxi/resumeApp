@@ -11,7 +11,9 @@ import { useState,memo } from 'react'
      removeEducation:(index:number)=>void,
      updateArrayItem:<T extends ResumeDataArray,K extends keyof ResumeData[T][number]>
      (section:T,index:number,key:K,value:ResumeData[T][number][K])=>void,
-                        }
+}
+
+
 function Education({addEducation,resumeData,removeEducation,updateArrayItem}:EducationProps) {
   const[localEdu,setEdu]=useState<Education[]>(resumeData.education)
 

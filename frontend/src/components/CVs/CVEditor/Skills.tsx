@@ -1,8 +1,11 @@
 import {motion,AnimatePresence} from 'framer-motion'
 import { fadeInUp } from '../constants/constant';
-import { Code , Plus ,X} from 'lucide-react';
+import { Code , Plus ,X, Loader} from 'lucide-react';
 import { type ResumeData , type Skills } from '../interfaces/cvInterface';
-import { memo , useState  } from 'react';
+import { memo , useState,useEffect  } from 'react';
+import { useSelectorState,useAppDispatch } from '@/hooks/useReducerHooks';
+import { generateSection,setGlobalError } from '@/slices/resumeReducer';
+
 
 
 interface SkillProps{
@@ -12,14 +15,19 @@ interface SkillProps{
     setNewTechSkill:React.Dispatch<React.SetStateAction<string>>,
     resumeData:ResumeData,
     addSkill:(type:'technical'|"soft",skill:string)=>void,
-    removeSkill:(type:'technical'|'soft',index:number)=>void
+    removeSkill:(type:'technical'|'soft',index:number)=>void,
+    setResumeData:React.Dispatch<React.SetStateAction<ResumeData>>
 
     }
 
 
 const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSkill,resumeData,removeSkill}:SkillProps) => {
+  const {jobDescription,isLoading,error,disabled}=useSelectorState((state)=>state.resumeState)
+
   const[softLocalSkill,setLocalSoftSkill]=useState<string>()
   const[techLocalSkill,setLocalTechSkill]=useState<string>()
+
+  const dispatch=useAppDispatch()
 
   const handlLocalChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
     const {name,value}=e.target
@@ -28,6 +36,30 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
     else setLocalTechSkill(value)
   
   }
+
+  const generateSkills=async()=>{
+    const response=await dispatch(generateSection({text:[...resumeData.skills.soft,...resumeData.skills.technical],jobDescription,type:'skills'})).unwrap()
+   
+    const parsedSkill=JSON.parse(response.replace(/```json|```/g, ""))
+    const skills=parsedSkill.skills
+   
+    skills.soft.forEach((skill:string)=>{
+      addSkill('soft',skill)
+    })
+   skills.technical.forEach((skill:string)=>{
+    addSkill('technical',skill)
+   })}
+
+    useEffect(()=>{
+           if(error["skills"]){
+                const timer = setTimeout(() => {
+               dispatch(setGlobalError({type:'skills',value:''}))  // dispatch an action to reset error
+           }, 2000)
+           return () => clearTimeout(timer)
+           }
+         },[error['skills']])
+
+
   return (
    <motion.div
              initial="initial"
@@ -145,13 +177,24 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
                </div>
              </div>
              <button
+            disabled={disabled}
             className=" px-3 py-2 text-white text-sm cursor-pointer font-medium 
              bg-gradient-to-r from-blue-500 to-blue-600 
              rounded-lg shadow-md 
              hover:from-blue-600 hover:to-blue-700 
              active:scale-95 
-             transition-all duration-300 ease-in-out">
-              Generate Skill Keywords Based on CV </button>
+             transition-all duration-300 ease-in-out"
+             onClick={generateSkills}
+             >
+             {!isLoading.skills? "Generate Skill Keywords Based on CV":(
+              <p className='flex items-center flex-row gap-2 '>Generating Skills... <Loader className='animate-spin'/></p>
+             )} </button>
+             {error.skills && 
+             
+             <motion.p 
+             initial={{opacity:0}}
+             animate={{opacity:1}}
+             className='errorMessage mt-3'>{error.skills}</motion.p>}
 
            </motion.div>
    

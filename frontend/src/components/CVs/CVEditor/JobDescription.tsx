@@ -1,6 +1,11 @@
 import { BookText } from "lucide-react"
+import { useAppDispatch } from "@/hooks/useReducerHooks"
+import { setJobDescription } from "@/slices/resumeReducer"
+import { useState } from "react"
 
-function JobDescription() {
+function JobDescription() { 
+  const[localJobDescription,setJob]=useState<string>('')
+  const dispatch=useAppDispatch()
   return (
     <div>
           <h3 className="font-semibold mt-4 text-sm mb-2 flex items-center gap-1">
@@ -8,6 +13,8 @@ function JobDescription() {
              </h3>
              <p className="text-xs text-gray-500 mb-3 mt-2">* Paste your current job description here, and our AI will generate relevant keywords and tailored work experience suggestions.</p>
                <textarea
+                 onChange={(e)=>{setJob(e.target.value)}}
+                 onBlur={()=>{dispatch(setJobDescription(localJobDescription))}}
                  className="border rounded p-1.5 text-xs w-full h-16 resize-none focus:ring-2 focus:ring-blue-400 transition-all"
                />
                  

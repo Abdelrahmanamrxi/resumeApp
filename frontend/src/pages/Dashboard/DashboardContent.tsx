@@ -42,7 +42,8 @@ const DashboardContent = () => {
     const[isLoading,setLoading]=useState<boolean>(false)
     
     const [data,setData]=useState<{savedResumes:SavedResumesType[]| []  ,atsResults:LatestATSResultsType | '' }>()
-    const [CustomError,setError]=useState<{savedResumes:string | null ,atsResults:string | null}>()
+    const [CustomError,setError]=useState<{savedResumes:string | null ,atsResults:string | null} | string>()
+    const [NetworkError,setNetwork]=useState<string>('')
 
     const FetchAllResumes=async()=>{
       try{
@@ -52,7 +53,7 @@ const DashboardContent = () => {
       }
       catch(err){
         if(err instanceof AxiosError){
-          throw new Error(err.response?.data.message)
+           throw new Error(err.response?.data.message)
         }
       }
       
@@ -67,6 +68,8 @@ const DashboardContent = () => {
       catch(err){
         console.log(err)
         if(err instanceof AxiosError){
+          if(err.code==="ERR_NETWORK") setNetwork('Connection lost to the Server. Please verify your internet connection.')
+          else
           throw new Error(err.response?.data.message)
         }
       }
@@ -91,7 +94,27 @@ const DashboardContent = () => {
      
     },[])
   
+    if(NetworkError) return   <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.5)", // dark overlay
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        
+        zIndex: 9999, // stay on top
+      }}
+    >
+      <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>[NETWORK ERROR] : {NetworkError}</p>
+    </div>
+
   if(isLoading) return <Loading message='Loading Data..'/>
+ 
   return (
        <div className="flex flex-1 mt-5 flex-col gap-4 p-4 pt-0">
       <motion.div

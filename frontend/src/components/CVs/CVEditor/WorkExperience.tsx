@@ -1,9 +1,11 @@
 
 import {motion,AnimatePresence} from 'framer-motion'
 import { fadeInUp,scaleIn } from '../constants/constant';
-import { Briefcase,PlusCircle,Plus,X } from 'lucide-react';
+import { Briefcase,PlusCircle,Plus,X,Loader } from 'lucide-react';
 import { type ResumeData,type ResumeDataArray,type Experience } from '../interfaces/cvInterface';
-import React, { useState } from 'react';
+import { useSelectorState,useAppDispatch } from '@/hooks/useReducerHooks';
+import { generateSection,setGlobalError } from '@/slices/resumeReducer';
+import React, { useState,useEffect } from 'react';
 
 
 
@@ -16,9 +18,18 @@ interface WorkExperienceProps{
   updateArrayItem:<T extends ResumeDataArray,K extends keyof ResumeData[T][number]>(section:T,index:number,key:K,value:ResumeData[T][number][K])=>void,
   removeBulletPoint:(index:number,pointIndex:number)=>void
 }
+
+
+
+
 function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperience,updateArrayItem,removeBulletPoint}:WorkExperienceProps) {
 
     const[localExperience,setExp]=useState<Array<Experience>>(resumeData.experiences)
+  
+    const {isLoading,error,disabled,jobDescription}=useSelectorState((state)=>state.resumeState)
+    
+    const dispatch=useAppDispatch()
+
 
     const handleLocalChange=(e:React.ChangeEvent<HTMLInputElement>,index:number)=>{
       const {name,value}=e.target
@@ -41,6 +52,42 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
         })
       })
     }
+      
+    const generateExp=async(index:number)=>{
+    
+    const points=localExperience.flatMap((exp,i)=>{
+          if(i===index)
+          return exp.points.map((point)=>{
+          return point
+        })
+        return []
+     })
+
+     const response=await dispatch(generateSection({jobDescription,text:points,type:'experience'})).unwrap()
+     const parsedContent=JSON.parse(response)
+     const parsedPoints=parsedContent.points
+
+     resumeData.experiences[index].points=parsedPoints
+
+     setExp((prev)=>{
+      return prev.map((exp,i)=>{
+        if(index===i)
+          return {...exp,'points':parsedPoints}
+        return exp
+      })
+    
+     })
+    }
+
+      useEffect(()=>{
+        if(error["experience"]){
+             const timer = setTimeout(() => {
+            dispatch(setGlobalError({type:'experience',value:''}))  // dispatch an action to reset error
+        }, 2000)
+        return () => clearTimeout(timer)
+        }
+      },[error['experience']])
+
   return (
        <motion.div
           initial="initial"
@@ -117,6 +164,7 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
                         <input
                           type="text"
                           name='points'
+                          id='point'
                           value={localExperience[i]?.points[pi]}
                           placeholder="Bullet Point"
                           onChange={(e)=>{handleLocalPointChange(e,i,pi)}}
@@ -187,9 +235,19 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
              hover:from-blue-600 hover:to-blue-700 
              active:scale-95 
              transition-all duration-300 ease-in-out"
+             onClick={()=>{generateExp(i)}}
+             disabled={disabled}
 >
-  Generate AI Response
+{ !isLoading.experience? " Generate AI Response" : (
+  <p className='flex justify-center gap-2 flex-row items-center'>Generating...<Loader className='animate-spin'/></p>
+)}
 </button>
+{error.experience && 
+<motion.p
+initial={{opacity:0}}
+animate={{opacity:1}}
+className='errorMessage mt-3'>{error.experience}
+</motion.p>}
   </div>
                 </div>
               </motion.div>

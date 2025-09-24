@@ -17,5 +17,6 @@ router.post('/analysis',authMiddleware('user'),upload.single('file'),resumeContr
 router.post('/',authMiddleware('user'),resumeController.createResume.bind(resumeController))
 router.get('/:resumeId',authMiddleware('user'),resumeController.getResume.bind(resumeController))
 router.get('/',authMiddleware('user'),resumeController.getAllResumes.bind(resumeController))
-
+router.post('/match',authMiddleware('user'),resumeController.generateResumeSection.bind(resumeController))
+router.patch('/:resumeId',authMiddleware('user'),resumeController.SaveResume.bind(resumeController))
 export default router

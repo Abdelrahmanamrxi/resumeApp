@@ -8,8 +8,10 @@ import ParseService from "../parseText/parseService"
 import OpenApiService from "../openApi/openapiService";
 import ATS from "../../model/ATS/ATS";
 import ATS_SchemaInterface from "../../interfaces/atsInterface";
-import mongoose from "mongoose";
+import mongoose , {UpdateQuery} from "mongoose";
+import { flatten } from "flat";
 import { ResumeType } from "../../interfaces/resumeInterface";
+
 
 class ResumeService<T extends ResumeDataInterface>{
     constructor(private cloudinaryService:CloudinaryService,private openApiService:OpenApiService){}
@@ -17,9 +19,9 @@ class ResumeService<T extends ResumeDataInterface>{
     private getResumeType(resumeData:T){
         return TemplateService.getTemplate(resumeData)
     }
-   async SavePDFService(resumeData:T):Promise<void>{
+   async downloadPDFService(resumeData:T, userId:mongoose.Types.ObjectId | string):Promise<Uint8Array<ArrayBufferLike>>{
         try{
-            const {userId}=resumeData
+            
             const template:string=this.getResumeType(resumeData)
             const browser=await puppeteer.launch()
             const page=await browser.newPage()
@@ -28,8 +30,9 @@ class ResumeService<T extends ResumeDataInterface>{
                 format:'A4',
                 printBackground:true
             })
-            const public_id=await this.cloudinaryService.UploadToCloudinary(Buffer.from(pdf),userId)
+            await this.cloudinaryService.UploadToCloudinary(Buffer.from(pdf),userId)
             await browser.close()
+            return pdf
             
         }
         catch(err){
@@ -112,11 +115,31 @@ class ResumeService<T extends ResumeDataInterface>{
                 return response
             }
             catch(err){
+                console.log(err)
                 throw new HttpException('Error while generating AI response')
             }
     
-        }
+        }   
+        async SaveResumeService(changedFields:string | object,userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string ){
+               
+            try{
+                const extractedFields=Object.keys(changedFields)[0]
+                const parsedFields=JSON.parse(extractedFields)
+                
+                const updatedFields:Record<string,any>=flatten(parsedFields,{safe:true})
+                
+                const newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},{$set:updatedFields},
+                {new:true}).select("-_id -userId")
+                // new:true sends the new resume after updating the values
+                if(!newResume) throw new HttpException("Couldn't Find Resume To Update",404)
+                return newResume
+            }
+            catch(error){
+                console.log(error)
+                throw new HttpException('Error While Updating Resume')
+            }
 
+        }
 
 
 }

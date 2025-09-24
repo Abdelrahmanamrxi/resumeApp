@@ -14,7 +14,7 @@ class ModernMinimalist <T extends ResumeDataInterface>  implements TemplateProdu
             <div class="experience-item">
                 <div class="experience-header">
                     <div class="job-title" style="color: ${getColor(this.resumeData.color.textColor, 800)}">${exp.jobTitle}</div>
-                    <p class="date-range" style="color: ${getColor(this.resumeData.color.textColor, 800)}">(${exp.from.toLocaleDateString("en-US",{month:'short',year:"numeric"})}) - (${exp.To.toLocaleDateString("en-US",{month:'short',year:"numeric"})})</p>
+                    <p class="date-range" style="color: ${getColor(this.resumeData.color.textColor, 800)}">(${new Date(exp.from).toLocaleDateString("en-US",{month:'short',year:"numeric"})}) - (${new Date(exp.To).toLocaleDateString("en-US",{month:'short',year:"numeric"})})</p>
                 </div>
                 <div class="company-name" style="color: ${getColor(this.resumeData.color.textColor, 600)}">${exp.company}</div>
                 <ul class="experience-points">
@@ -35,7 +35,7 @@ class ModernMinimalist <T extends ResumeDataInterface>  implements TemplateProdu
                     <p class="education-item" style="color: ${getColor(this.resumeData.color.textColor, 600)}">
                         <strong>${edu.degree}</strong>, ${edu.institution}
                     </p>
-                    <p class="date-range" style="color: ${getColor(this.resumeData.color.textColor, 800)}">(${edu.from.toLocaleDateString("en-US",{month:'short',year:"numeric"})}) - (${edu.To.toLocaleDateString("en-US",{month:'short',year:"numeric"})})</p>
+                    <p class="date-range" style="color: ${getColor(this.resumeData.color.textColor, 800)}">(${new Date(edu.from).toLocaleDateString("en-US",{month:'short',year:"numeric"})}) - (${new Date(edu.To).toLocaleDateString("en-US",{month:'short',year:"numeric"})})</p>
                 </div>
                 `).join('');
                 }
