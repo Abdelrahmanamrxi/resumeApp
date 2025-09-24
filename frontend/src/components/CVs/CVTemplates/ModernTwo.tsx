@@ -32,7 +32,7 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
               >
                 <BasicInfoSection resumeData={resumeData} handleChange={handleChange}/>
 
-                <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
+                <WorkExperience resumeData={resumeData} setResumeData={setResumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
 
 
                 <Education resumeData={resumeData} addEducation={addEducation} removeEducation={removeEducation} updateArrayItem={updateArrayItem}/>

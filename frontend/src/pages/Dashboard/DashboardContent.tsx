@@ -19,6 +19,8 @@ import AISummary from './AISummary/AISummary';
 import api from '@/middleware/interceptor';
 import Loading from '@/components/Loading/Loading';
 import { AxiosError } from 'axios';
+
+
    type DataWithTimeStamp=ResumeData & {
           updatedAt:Date,
           _id:string
@@ -39,10 +41,15 @@ const DashboardContent = () => {
       }
       }
     const[templateOpen,setTemplate]=useState<{title:string,id:ResumeType,src:string} | null>(null)
+
     const[isLoading,setLoading]=useState<boolean>(false)
     
     const [data,setData]=useState<{savedResumes:SavedResumesType[]| []  ,atsResults:LatestATSResultsType | '' }>()
-    const [CustomError,setError]=useState<{savedResumes:string | null ,atsResults:string | null} | string>()
+
+    const [customError,setError]=useState<{savedResumes:string  ,atsResults:string } >({
+      savedResumes:'',
+      atsResults:''
+    })
     const [NetworkError,setNetwork]=useState<string>('')
 
     const FetchAllResumes=async()=>{
@@ -75,7 +82,7 @@ const DashboardContent = () => {
       }
     }
 
-    console.log(data?.savedResumes)
+   
 
     useEffect(()=>{
       setLoading(true)
@@ -85,8 +92,8 @@ const DashboardContent = () => {
           atsResults:response[1].status==="fulfilled"  && response[1].value ? response[1].value : ''
         })
         setError({
-          savedResumes:response[0].status==="rejected" && response[0].reason ? response[0].reason:'',
-          atsResults:response[1].status==="rejected" && response[1].reason ? response[1].reason :''
+          savedResumes:response[0].status==="rejected" && response[0].reason ? String(response[0].reason):'',
+          atsResults:response[1].status==="rejected" && response[1].reason ?String(response[1].reason) :''
         })
       }).finally(()=>{
         setLoading(false)
@@ -94,7 +101,7 @@ const DashboardContent = () => {
      
     },[])
   
-    if(NetworkError) return   <div
+    if(NetworkError) return  <div
       style={{
         position: "fixed",
         top: 0,
@@ -114,7 +121,32 @@ const DashboardContent = () => {
     </div>
 
   if(isLoading) return <Loading message='Loading Data..'/>
- 
+  
+  if(customError.atsResults || customError.savedResumes){
+    
+    return (
+      <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.5)", // dark overlay
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        
+        zIndex: 9999, // stay on top
+      }}
+    >
+    {customError.atsResults && <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>{customError.atsResults}</p>}
+    {customError.savedResumes && <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>{customError.savedResumes}</p>}
+    </div>
+    )
+  }
+  
   return (
        <div className="flex flex-1 mt-5 flex-col gap-4 p-4 pt-0">
       <motion.div
@@ -171,7 +203,7 @@ const DashboardContent = () => {
       </motion.div>
 
       {/* Your Resumes Section */}
-      { data?.savedResumes && data?.savedResumes.length>0 && <SavedResumes data={data?.savedResumes}/>}
+      { data?.savedResumes && data?.savedResumes.length>0 && <SavedResumes data={data?.savedResumes}/> }
 
       {/* Templates Preview */}
       <motion.div

@@ -6,8 +6,7 @@ import logo from '../../../assets/CATALYx.png'
 const footerLinks = [
   { name: "Home", href: "#" },
   { name: "About", href: "#" },
-  { name: "Services", href: "#" },
-  { name: "Contact", href: "#" },
+  { name: "Pricing", href: "#" },
 ];
 
 function Footer() {

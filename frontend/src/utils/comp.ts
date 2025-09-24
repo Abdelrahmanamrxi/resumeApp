@@ -1,19 +1,19 @@
 const components: { title: string; to: string; description: string }[] = [
   {
     title: "Start Building Your Resume",
-    to: "/resume-builder",
+    to: "/user/dashboard",
     description:
       "Quickly create a professional, ATS-friendly resume with the help of AI — no design skills needed.",
   },
   {
     title: "AI Resume Analyzer",
-    to: "/resume-analyzer",
+    to: "/user/dashboard/resume-analyze",
     description:
       "Analyze your resume for keyword optimization, formatting, and ATS compatibility to increase interview chances.",
   },
   {
     title: "Job Match Scoring",
-    to: "/job-match",
+    to: "/user/dashboard/resume-analyze",
     description:
       "Compare your resume against any job description and get a match score with personalized improvement tips.",
   },

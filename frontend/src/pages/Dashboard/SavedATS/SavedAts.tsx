@@ -71,10 +71,10 @@ const SavedAts: React.FC = () => {
     }
   }
  
-
   useEffect(() => {
         fetchUserATS()
   }, [])
+
   useEffect(()=>{
     filterResumes()
   },[filter])
@@ -196,7 +196,8 @@ const SavedAts: React.FC = () => {
         </motion.div>
 
         {/* Resume Cards */}
-     { resumes.length>0?<motion.div
+     { resumes.length>0?
+     <motion.div
           className="px-6 pb-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
           animate="visible"
@@ -206,12 +207,10 @@ const SavedAts: React.FC = () => {
           }}
         >
           {resumes.map((resume) => (
-            <motion.div
+            <motion.div layout
               key={resume.id}
-              variants={{
-                hidden: { opacity: 0, scale: 0.9, y: 20 },
-                visible: { opacity: 1, scale: 1, y: 0 },
-              }}
+              initial={{ opacity: 0 ,y:20 ,scale:0.95}}
+              animate={{ opacity: 1 , y:0 ,scale:1 }}
               whileHover={{ y: -5, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 120 }}
               className="rounded-2xl bg-white/80 backdrop-blur-lg shadow-md p-6 border border-gray-100 flex flex-col"

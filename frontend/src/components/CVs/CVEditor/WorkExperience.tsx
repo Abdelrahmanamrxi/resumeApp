@@ -16,17 +16,21 @@ interface WorkExperienceProps{
   addExperience:()=>void,
   removeExperience:(index:number)=>void,
   updateArrayItem:<T extends ResumeDataArray,K extends keyof ResumeData[T][number]>(section:T,index:number,key:K,value:ResumeData[T][number][K])=>void,
-  removeBulletPoint:(index:number,pointIndex:number)=>void
+  removeBulletPoint:(index:number,pointIndex:number)=>void,
+  setResumeData:React.Dispatch<React.SetStateAction<ResumeData>>
 }
 
 
 
 
-function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperience,updateArrayItem,removeBulletPoint}:WorkExperienceProps) {
+function WorkExperience({addBulletPoint,resumeData,setResumeData,addExperience,removeExperience,updateArrayItem,removeBulletPoint}:WorkExperienceProps) {
 
     const[localExperience,setExp]=useState<Array<Experience>>(resumeData.experiences)
   
-    const {isLoading,error,disabled,jobDescription}=useSelectorState((state)=>state.resumeState)
+    const[loadingExp,setLoading]=useState<number | null>()
+
+
+    const {error,disabled,jobDescription}=useSelectorState((state)=>state.resumeState)
     
     const dispatch=useAppDispatch()
 
@@ -39,6 +43,7 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
         else return data
       }))
     }
+
     const handleLocalPointChange=(e:React.ChangeEvent<HTMLInputElement>,index:number,pointIndex:number)=>{
       const {value}=e.target
       setExp((prev)=>{
@@ -52,32 +57,44 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
         })
       })
     }
+    
       
     const generateExp=async(index:number)=>{
-    
-    const points=localExperience.flatMap((exp,i)=>{
-          if(i===index)
+    setLoading(index)
+    try{
+
+      const points=localExperience.flatMap((exp,i)=>{
+        if(i===index)
           return exp.points.map((point)=>{
-          return point
+        return point
         })
         return []
      })
-
+     
      const response=await dispatch(generateSection({jobDescription,text:points,type:'experience'})).unwrap()
      const parsedContent=JSON.parse(response)
      const parsedPoints=parsedContent.points
-
-     resumeData.experiences[index].points=parsedPoints
-
-     setExp((prev)=>{
-      return prev.map((exp,i)=>{
-        if(index===i)
-          return {...exp,'points':parsedPoints}
-        return exp
-      })
-    
-     })
+     setResumeData(prev => ({
+    ...prev,
+    experiences: prev.experiences.map((exp, i) =>
+    i === index ? { ...exp, points: parsedPoints } : exp
+  )
+}))
+}
+  catch{
+ setLoading(null)
+  }
+  finally{
+  setLoading(null)
+  }
     }
+
+
+    useEffect(()=>{
+      setExp(resumeData.experiences)
+    },[resumeData.experiences])
+
+
 
       useEffect(()=>{
         if(error["experience"]){
@@ -238,9 +255,9 @@ function WorkExperience({addBulletPoint,resumeData,addExperience,removeExperienc
              onClick={()=>{generateExp(i)}}
              disabled={disabled}
 >
-{ !isLoading.experience? " Generate AI Response" : (
+{ loadingExp === i? (
   <p className='flex justify-center gap-2 flex-row items-center'>Generating...<Loader className='animate-spin'/></p>
-)}
+):" Generate AI Response" }
 </button>
 {error.experience && 
 <motion.p

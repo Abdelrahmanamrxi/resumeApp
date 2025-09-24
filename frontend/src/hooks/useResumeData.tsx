@@ -9,7 +9,7 @@ const useResumeData = (initialData:ResumeData) => {
 
       const changedFields=diff(initialData,resumeData)
       const stringifiedFields=JSON.stringify(changedFields) // track changed fields once resume data is fetched
-      console.log(stringifiedFields)
+     
     
       
       // handles basic info fields ex name phone links etc

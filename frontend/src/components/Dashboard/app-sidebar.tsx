@@ -4,7 +4,8 @@ import {
   Command,
   GalleryVerticalEnd,
   FileUser,
-  SaveAll,Briefcase
+  SaveAll,
+  House
 } from "lucide-react"
 
 import { NavMain } from "@/components/Dashboard/nav-main"
@@ -53,9 +54,9 @@ const data = {
       
     },
     {
-      title: "Match Your Resume",
-      url: "#",
-      icon: Briefcase,
+      title: "Home",
+      url: "/user/dashboard",
+      icon: House,
      
     },
 

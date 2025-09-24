@@ -11,7 +11,7 @@ import DashboardContent from "./pages/Dashboard/DashboardContent"
 import PricingSection from "./pages/Billing/PricingSection"
 import ATSAnalysis from "./pages/Dashboard/ResumeAnalyze/ATSAnaylsis"
 import SavedAts from "./pages/Dashboard/SavedATS/SavedAts"
-
+import About from "./pages/About/About"
 
 
 
@@ -27,6 +27,7 @@ function App() {
       <Route element={<Login/>} path="/login"/>
       <Route element={<Redirect/>} path="/login-redirect"/>
       <Route element={<Signup/>} path="/signup"/>
+      <Route element={<About/>} path="/about"/>
       <Route element={<PricingSection/>} path="/billing"/>
        <Route element={<AuthDashboard/>}>
        <Route element={<CVTemplate/>} path="/user/dashboard/resume/:resumeId"/>

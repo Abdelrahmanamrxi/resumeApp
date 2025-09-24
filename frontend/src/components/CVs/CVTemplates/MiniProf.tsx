@@ -37,7 +37,7 @@ function CVTemplate3({data}:{data:ResumeData}) {
         className="w-full md:w-2/5 space-y-4 bg-white p-4 rounded-lg shadow-lg overflow-y-auto max-h-[calc(100vh-2rem)]"
       >
         <BasicInfoSection resumeData={resumeData} handleChange={handleChange}/>
-        <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
+        <WorkExperience resumeData={resumeData} addBulletPoint={addBulletPoint} removeBulletPoint={removeBulletPoint} addExperience={addExperience} setResumeData={setResumeData} updateArrayItem={updateArrayItem} removeExperience={removeExperience} />
         <Education resumeData={resumeData} addEducation={addEducation} removeEducation={removeEducation} updateArrayItem={updateArrayItem}/>
         <Certifications resumeData={resumeData} addCertification={addCertification} updateArrayItem={updateArrayItem} removeCertification={removeCertification} />
         <Skills resumeData={resumeData} newSoftSkill={newSoftSkill} newTechSkill={newTechSkill}  setResumeData={setResumeData}

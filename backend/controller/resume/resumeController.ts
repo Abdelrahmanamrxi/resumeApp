@@ -76,7 +76,7 @@ class ResumeController{
             const {_id}=req.user as {_id:mongoose.Types.ObjectId | string}
 
             const response=await this.resumeService.getAllResumesService(_id)
-
+            
             if(!response) return res.status(404).json({message:"No resumes have been found matching your criteria"})
             res.status(200).json(response)
         }
