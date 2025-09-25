@@ -96,8 +96,9 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
           {resumeData.experiences.length>0?'PROFESSIONAL EXPERIENCE':''}
         </h2>
         <AnimatePresence>
-          {resumeData.experiences.map((exp, i) => (
-            <motion.div 
+          {resumeData.experiences.length>0 && resumeData.experiences.map((exp,i)=>{
+            return (
+                <motion.div 
               key={i} 
               className="mb-4"
               initial={{ x: -20, opacity: 0 }}
@@ -126,7 +127,9 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
                 </ul>
               </div>
             </motion.div>
-          ))}
+            )
+          })}
+          
         </AnimatePresence>
       </motion.section>
 
@@ -139,7 +142,7 @@ const CVTemplate4 = ({data}:{data:ResumeData}) => {
           <h2 className={`text-sm font-bold ${resumeData.education.length>0?"":"hidden"} text-slate-700 border-b border-slate-300 pb-1 mb-3`}>
             {resumeData.education.length>0?'EDUCATION':''}
           </h2>
-          {resumeData.education.map((edu, i) => (
+          {resumeData.education.length>0 && resumeData.education.map((edu, i) => (
             <motion.div 
               key={i} 
               className="text-xs text-gray-700 mb-2"

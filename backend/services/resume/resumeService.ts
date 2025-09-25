@@ -123,14 +123,20 @@ class ResumeService<T extends ResumeDataInterface>{
         async SaveResumeService(changedFields:string | object,userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string ){
                
             try{
+                console.log(changedFields)
                 const extractedFields=Object.keys(changedFields)[0]
                 const parsedFields=JSON.parse(extractedFields)
-                
+                console.log(parsedFields)
+                if (parsedFields.experiences && Object.keys(parsedFields.experiences).length===0) 
+                parsedFields.experiences = [];
+                if(parsedFields.education && Object.keys(parsedFields.education).length===0)
+                parsedFields.education=[]
+            
                 const updatedFields:Record<string,any>=flatten(parsedFields,{safe:true})
                 
                 const newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},{$set:updatedFields},
                 {new:true}).select("-_id -userId")
-                // new:true sends the new resume after updating the values
+               
                 if(!newResume) throw new HttpException("Couldn't Find Resume To Update",404)
                 return newResume
             }

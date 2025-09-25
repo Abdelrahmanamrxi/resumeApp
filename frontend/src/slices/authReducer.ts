@@ -1,5 +1,7 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit'
 import {jwtDecode} from 'jwt-decode'
+
+
 export interface SignUpInterface{
     email:string,
     fullName:string,
@@ -52,6 +54,7 @@ const authReducer=createSlice({
             localStorage.removeItem('token')
             localStorage.removeItem('name')
             localStorage.removeItem('email')
+            
             
         },
         setAccessToken:(state:AuthType,action:PayloadAction<string>)=>{

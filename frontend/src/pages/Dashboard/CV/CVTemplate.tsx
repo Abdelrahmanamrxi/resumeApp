@@ -34,14 +34,18 @@ function CVTemplate() {
             
             const response=await api.get(`resume/${resumeId}?resumeType=${resumeType}`)
 
-            const data={...response.data,experiences:response.data.experiences.map((exp:Experience)=>{
-                return {...exp,from:new Date(exp.from),To:new Date(exp.To)}
-            }),education:response.data.education.map((edu:Education)=>{
-                return {...edu,from:new Date(edu.from),To:new Date(edu.To)}
-            }),certifications:response.data.certifications.map((cert:Certification)=>{
+            const data={...response.data,experiences:response.data.experiences.filter((exp:Experience | null)=>exp!==null && exp !== undefined).map((exp:Experience)=>{
+                
+                return {...exp,from:exp.from?new Date(exp.from) : null,To:exp.To?new Date(exp.To):null}
+            }),
+
+            education:response.data.education.filter((edu: Education | null) => edu !== null && edu !== undefined).map((edu:Education)=>{ 
+                return {...edu,from:edu.from?new Date(edu.from):'',To:edu.To?new Date(edu.To):''}
+
+            }),certifications:response.data.certifications.filter((cert:Certification)=>cert!==null && cert!==undefined).map((cert:Certification)=>{
                 return {...cert,year:new Date(cert.year)}
             })}
-
+            console.log(data)
             setData(data)
             setLoading(false)
         }

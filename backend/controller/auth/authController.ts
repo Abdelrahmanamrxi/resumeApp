@@ -54,6 +54,22 @@ class AuthController {
         }
 
     }
+    async handleLogOut(req:Request,res:Response,next:NextFunction){
+        try{
+            res.clearCookie('refreshToken',{
+                sameSite:'strict',
+                httpOnly:true,
+                
+            })
+            res.status(200).json({message:'Cookie Cleared'})
+        }
+        catch(err){
+            next(new HttpException('Server Error While Logging out'))
+        }
+    }
+
+
+
 
 }
 export default AuthController

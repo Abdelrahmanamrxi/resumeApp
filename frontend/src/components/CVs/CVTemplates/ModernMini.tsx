@@ -115,7 +115,7 @@ function CVTemplate1({data}:{data:ResumeData}) {
           {resumeData.experiences.length>0?'Work Experience':''}
           </h2>
           <AnimatePresence>
-            {resumeData.experiences.map((exp, i) => (
+            {resumeData.experiences.length>0 && resumeData.experiences.map((exp, i) => (
               <motion.div 
                 key={i} 
                 className="mb-3"
@@ -163,7 +163,7 @@ function CVTemplate1({data}:{data:ResumeData}) {
           className={`text-sm font-bold ${resumeData.education.length>0?"border-b-2":""}  pb-1 mb-2 `}>
          {resumeData.education.length>0?'Education':''}
           </h2>
-          {resumeData.education.map((edu, i) => (
+          {resumeData.education.length>0 && resumeData.education.map((edu, i) => (
             <div className="flex flex-row justify-between">
 
             <motion.p 

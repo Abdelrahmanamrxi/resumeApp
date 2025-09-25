@@ -6,6 +6,7 @@ import { type ResumeData,type ResumeDataArray,type Experience } from '../interfa
 import { useSelectorState,useAppDispatch } from '@/hooks/useReducerHooks';
 import { generateSection,setGlobalError } from '@/slices/resumeReducer';
 import React, { useState,useEffect } from 'react';
+import { safeISO } from '@/lib/utils';
 
 
 
@@ -126,7 +127,7 @@ function WorkExperience({addBulletPoint,resumeData,setResumeData,addExperience,r
             </motion.button>
           </div>
           <AnimatePresence>
-            {resumeData.experiences.map((exp, i) => (
+            {resumeData.experiences.length>0 && resumeData.experiences.map((exp, i) => (
               <motion.div
                 key={i}
                 layout
@@ -141,6 +142,7 @@ function WorkExperience({addBulletPoint,resumeData,setResumeData,addExperience,r
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => removeExperience(i)}
+                  key={i}
                   className="absolute top-1 right-1 text-red-500 hover:bg-red-50 p-1 rounded"
                 >
                   <X size={14} />
@@ -170,7 +172,7 @@ function WorkExperience({addBulletPoint,resumeData,setResumeData,addExperience,r
                 
                 <div className="space-y-1">
                   <AnimatePresence>
-                    {exp.points.map((point, pi) => (
+                    {exp.points && exp.points.map((point, pi) => (
                       <motion.div
                         key={pi}
                         initial={{ opacity: 0, x: -10 }}
@@ -223,7 +225,7 @@ function WorkExperience({addBulletPoint,resumeData,setResumeData,addExperience,r
                   type="Date"
                   name="from"
                   placeholder="From"
-                  value={localExperience[i]?.from ? new Date(localExperience[i].from).toISOString().split("T")[0] : ""}
+                  value={safeISO(localExperience[i]?.from)}
                   onChange={(e) =>
                     updateArrayItem("experiences", i, "from", new Date(e.target.value))
                   }
@@ -237,7 +239,7 @@ function WorkExperience({addBulletPoint,resumeData,setResumeData,addExperience,r
                   type="Date"
                   name="To"
                   placeholder="To"
-                  value={localExperience[i]?.To ? new Date(localExperience[i].To).toISOString().split("T")[0] : ""}
+                  value={safeISO(localExperience[i]?.To)}
                   onChange={(e) =>
                     updateArrayItem("experiences", i, "To", new Date(e.target.value))
                   }

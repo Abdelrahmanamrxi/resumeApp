@@ -46,7 +46,9 @@ function Education({addEducation,resumeData,removeEducation,updateArrayItem}:Edu
               </motion.button>
             </div>
             <AnimatePresence>
-              {resumeData.education.map((edu, i) => (
+              {resumeData.education && resumeData.education.map((edu,i)=>{
+                if(!edu) return null
+                return(
                 <motion.div
                   key={i}
                   layout
@@ -110,13 +112,15 @@ function Education({addEducation,resumeData,removeEducation,updateArrayItem}:Edu
                     value={edu.To ? new Date(edu.To).toISOString().split("T")[0] : ""}
                     onChange={(e) =>
                       updateArrayItem("education", i, "from", new Date(e.target.value))
+                    
                     }
                     className="border rounded p-1.5 text-xs  focus:ring-2 focus:ring-blue-400 transition-all"
                     />
                     </div>
                     </div>
-                </motion.div>
-              ))}
+                </motion.div>)
+              })}
+            
             </AnimatePresence>
           </motion.div>
   )

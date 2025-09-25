@@ -67,7 +67,7 @@ class ResumeController{
         if(!resumeId) return res.status(400).json({message:"Please provide a resume ID to access the resume"})
 
         const response=await this.resumeService.getResumeService(_id,resumeId,resumeType)
-
+        console.log(response)
         if(!response) return res.status(404).json({message:"Couldn't find resume matching your criteria."})
         res.status(200).json(response)
     }

@@ -2,11 +2,11 @@
 import { useAppDispatch } from "@/hooks/useReducerHooks"
 import { removeAccessToken } from "@/slices/authReducer"
 import { useNavigate } from "react-router-dom"
-
 import {
   BadgeCheck,
   ChevronsUpDown,
   LogOut,
+  Loader
 } from "lucide-react"
 
 import {
@@ -29,6 +29,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
+import api from "@/middleware/interceptor"
+import { useState } from "react"
+import { AxiosError } from "axios"
+
 export function NavUser({
   user,
 }: {
@@ -37,10 +41,35 @@ export function NavUser({
     email: string
   }
 }) {
+
   const { isMobile } = useSidebar()
+  const[isLoading,setLoading]=useState<boolean>(false)
+  const[error,setError]=useState<string>('')
   const dispatch=useAppDispatch()
   const navigate=useNavigate()
 
+  const handleLogOut=async()=>{
+      setLoading(true)
+    try{
+      const response=await api.post('/auth/logout')
+      if(response.data){
+        dispatch(removeAccessToken())
+        navigate('/')
+      }
+    }
+    catch(err){
+      if(err instanceof AxiosError){
+        if(err.code==='ERR_NETWORK') 
+        setError("Couldn't establish a connection with the server")
+        else
+        setError(err.response?.data.message)
+      }
+      
+    }
+    finally{
+      setLoading(false)
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -94,13 +123,17 @@ export function NavUser({
            
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem >
-              
-              <button className="cursor-pointer gap-2 flex flex-row items-center" onClick={()=>{
-                dispatch(removeAccessToken())
-                navigate('/')
+            <DropdownMenuItem>
+              <div className="flex flex-col">
 
-              }}> <LogOut /> Logout </button>
+              
+              <button className="cursor-pointer gap-2 flex flex-row items-center" onClick={handleLogOut}> {!isLoading?(<p className="flex flex-row gap-2 items-center"> <LogOut/> Sign Out</p> ):
+              (
+                <p className="flex flex-row items-center gap-2">Signing out.. <Loader className="animate-spin"/></p>
+              )
+            } </button>
+              {error&&<p className="errorMessage mt-2">[ERROR]: {error}..</p>}
+            </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

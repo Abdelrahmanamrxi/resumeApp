@@ -112,7 +112,7 @@ const CVTemplate2 = ({data}:{data:ResumeData}) => {
       {resumeData.experiences.length > 0 ? "WORK EXPERIENCE" : ""}
     </h2>
     <AnimatePresence>
-      {resumeData.experiences.map((exp, i) => (
+      {resumeData.experiences.length>0 && resumeData.experiences.map((exp, i) => (
         <motion.div 
           key={i} 
           className="mb-4 p-3 bg-gray-50 rounded"
@@ -168,7 +168,7 @@ const CVTemplate2 = ({data}:{data:ResumeData}) => {
       {resumeData.education.length > 0 ? "EDUCATION" : ""}
     </h2>
     <div className="bg-gray-50 p-3 rounded">
-      {resumeData.education.map((edu, i) => (
+      {resumeData.education.length>0 && resumeData.education.map((edu, i) => (
         <div className='flex flex-row justify-between'>
         <motion.p 
           key={i} 
