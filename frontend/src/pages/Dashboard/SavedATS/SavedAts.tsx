@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import api from "@/middleware/interceptor"
 import Loading from "@/components/Loading/Loading"
+import { useQuery,useQueryClient } from "@tanstack/react-query"
 import {
   FileText,
   Calendar,
@@ -13,6 +14,7 @@ import {
 import { AxiosError, type AxiosResponse } from "axios"
 import type { ATS_SchemaInterface } from "@/interfaces"
 import { useNavigate } from "react-router-dom"
+
 import {
   Select,
   SelectContent,
@@ -38,67 +40,37 @@ interface Resume {
 
 
 const SavedAts: React.FC = () => {
-  const [resumes, setResumes] = useState<Resume[]>([])
-  const[Error,setError]=useState<string>()
-  const[isLoading,setLoading]=useState<boolean>(false)
+
   const[filter,setFilter]=useState<string>('none')
-
+  const queryClient=useQueryClient()
   const navigate=useNavigate()
-
   const fetchUserATS=async()=>{
-    setError('')
-    setLoading(true)
-    try{
-
-      const response=await api.get('/ats') as Resume[] & AxiosResponse
-      setResumes(response.data.map((data:Resume  & ATS_SchemaInterface)=>{
-        return {id:data._id,title:data.fileDetails.fileName,createdAt:data.createdAt,matchScore:data.matchScore,foundKeywords:data.foundKeywords,verdict:data.verdict}
-      }))
-      setLoading(false)
-    }
-    catch(err){
-      if(err instanceof AxiosError && err.response){
-        if(err.code==="ERR_NETWORK") 
-        setError('[NETWORK ERROR] : Connecting Lost, Please try again Later.')
-        else 
-        setError(err.response.data.message)
+      try{
+        const response=await api.get(`/ats?filter=${filter}`) as Resume[] & AxiosResponse
+        return response.data.map((data:Resume  & ATS_SchemaInterface)=>{
+          return {id:data._id,title:data.fileDetails.fileName,createdAt:data.createdAt,matchScore:data.matchScore,foundKeywords:data.foundKeywords,verdict:data.verdict}
+        })
       }
-      setLoading(false)
-
-    }
-    finally{
-      setLoading(false)
-    }
+      catch(err){
+        console.log(err)
+        if(err instanceof AxiosError)
+          if(err.code==="NETWORK_ERR")
+          throw new Error('[NETWORK ERROR]: Please Try again later')
+          else throw new Error(err.response?.data.message)
+      }
   }
+      const {data:resumes,isLoading,error}=useQuery({
+      queryKey:['savedAts'],
+      queryFn:fetchUserATS,
+      })
+      useEffect(()=>{
+        queryClient.invalidateQueries({queryKey:['savedAts']})
+      },[filter])
  
-  useEffect(() => {
-        fetchUserATS()
-  }, [])
-
-  useEffect(()=>{
-    filterResumes()
-  },[filter])
-  
-    function filterResumes(){
-      if(filter==="score"){
-      const sortedResumes=[...resumes].sort((a,b)=>b.matchScore-a.matchScore)
-      setResumes(sortedResumes)
-      }
-      if(filter==="new"){
-        const sortedResumes=[...resumes].sort((a,b)=>new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime())
-        setResumes(sortedResumes)
-      }
-        if(filter==="none"){
-        const sortedResumes=[...resumes].sort((a,b)=>new Date(a.createdAt).getTime()-new Date(b.createdAt).getTime())
-        setResumes(sortedResumes)
-      }
-    }
-
-
-
+     
   if(isLoading) return <Loading message="Fetching your ATS data..."/>
 
-  if(Error) return <p className="flex h-full items-center justify-center text-red-600 font-mono text-bases">{Error}</p>
+  if(error)  return <p className="flex h-full items-center justify-center text-red-600 font-mono text-bases">{error.message}</p>
   
   return (
     <div className="min-h-screen flex ">
@@ -159,7 +131,7 @@ const SavedAts: React.FC = () => {
               value:
                 resumes.length > 0
                   ? Math.round(
-                      resumes.reduce((a, b) => a + b.matchScore, 0) /
+                      resumes.reduce((a:number, b:Resume) => a + b.matchScore, 0) /
                         resumes.length
                     )
                   : 0,
@@ -196,7 +168,7 @@ const SavedAts: React.FC = () => {
         </motion.div>
 
         {/* Resume Cards */}
-     { resumes.length>0?
+     { resumes && resumes.length>0?
      <motion.div
           className="px-6 pb-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
@@ -206,7 +178,7 @@ const SavedAts: React.FC = () => {
             visible: { transition: { staggerChildren: 0.15 } },
           }}
         >
-          {resumes.map((resume) => (
+          {resumes.map((resume:Resume) => (
             <motion.div layout
               key={resume.id}
               initial={{ opacity: 0 ,y:20 ,scale:0.95}}

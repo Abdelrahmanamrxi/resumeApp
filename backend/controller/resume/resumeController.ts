@@ -3,6 +3,7 @@ import ResumeDataInterface from "../../interfaces/resumeInterface";
 import mongoose from "mongoose";
 import { NextFunction,Request,Response } from "express";
 import { ResumeType } from "../../interfaces/resumeInterface";
+import JustDiffOp from "../../utils/customTypes";
 class ResumeController{
     constructor(private resumeService:ResumeService<ResumeDataInterface>){}
 
@@ -106,8 +107,10 @@ class ResumeController{
 
     async SaveResume(req:Request,res:Response,next:NextFunction){
         try{
-            const changedFields=req.body as string | object
-            if(!changedFields) return res.status(400).json({message:'No changes has been made.'})
+            const changedFields=req.body as JustDiffOp[]
+            
+            if(!changedFields || Object.keys(changedFields).length===0) return res.status(400).json({message:'No changes has been made.'})
+                
             const {resumeId:_id}=req.params
             const {_id:userId}=req.user as {_id:mongoose.Types.ObjectId | string}
 
@@ -119,6 +122,7 @@ class ResumeController{
 
         }
         catch(err){
+            console.log(err)
             next(err)
         }
 

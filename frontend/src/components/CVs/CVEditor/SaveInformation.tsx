@@ -9,8 +9,9 @@ import { useState } from "react"
 import { Loader,Check,X } from "lucide-react"
 import {motion} from 'framer-motion'
 import type { ResumeData } from "../interfaces/cvInterface"
+import type { Diff } from "deep-diff"
 
-function SaveInformation({stringifiedFields,resumeData}:{stringifiedFields:string,resumeData:ResumeData}) {
+function SaveInformation({stringifiedFields,resumeData}:{stringifiedFields:Diff<ResumeData,ResumeData>[] | undefined ,resumeData:ResumeData}) {
 
 
     const[error,setError]=useState<{preview:string,save:string}>({
@@ -40,8 +41,6 @@ function SaveInformation({stringifiedFields,resumeData}:{stringifiedFields:strin
           setSuccess(false)
         },2000)
       }
-         
-      
       
     }
     catch(err){

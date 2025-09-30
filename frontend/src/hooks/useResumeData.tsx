@@ -1,28 +1,19 @@
 import { useState } from "react"
 import type { ResumeData,ResumeDataArray } from "@/components/CVs/interfaces/cvInterface"
-import {diff} from 'deep-object-diff'
-import { isEqual } from "lodash"
+
+// import {diff} from 'just-diff'
+import {diff} from 'deep-diff'
 
 const useResumeData = (initialData:ResumeData) => {
       const [resumeData, setResumeData] = useState<ResumeData>(initialData);
       const [newTechSkill, setNewTechSkill] = useState("");
       const [newSoftSkill, setNewSoftSkill] = useState("");
-      const changedValues:Partial<ResumeData>={}
-
-      const changedFields=diff(initialData,resumeData)
-      const stringifiedFields=JSON.stringify(changedFields) 
-      console.log(stringifiedFields)// track changed fields once resume data is fetched
-        function CheckChange(){
-          if(!isEqual(initialData.experiences,resumeData.experiences)){
-            changedValues.experiences=resumeData.experiences
-            return changedValues.experiences
-          }
-        }
-        console.log(CheckChange())
-          
-      
-
-      
+     
+      const stringifiedFields=diff(initialData,resumeData)
+   
+      // track changed fields once resume data is fetched
+      console.log(stringifiedFields)
+  
       // handles basic info fields ex name phone links etc
 
       const handleChange = (field: keyof ResumeData, value: string) => {

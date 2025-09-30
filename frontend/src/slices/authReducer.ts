@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit'
-import {jwtDecode} from 'jwt-decode'
+import { UserFromToken } from '@/utils/token'
 
 
 export interface SignUpInterface{
@@ -7,22 +7,8 @@ export interface SignUpInterface{
     fullName:string,
     password:string
 }
-interface TokenPayload {
-    name:string,
-    email:string
-}
-export function UserFromToken(accessToken: string | null) {
-  if (!accessToken) return null
 
-  try {
-    const decoded = jwtDecode<TokenPayload>(accessToken)
-    
-    return decoded 
-  } catch (e) {
-    console.error("Invalid token", e)
-    return null
-  }
-}
+
 
 
 type AuthType={

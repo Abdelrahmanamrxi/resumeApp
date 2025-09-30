@@ -31,7 +31,8 @@ class ATSController{
      async getAllATS(req:Request,res:Response,next:NextFunction){
         try{
             const {_id:userId}=req.user as {_id:string}
-            const response=await this.atsService.getAllATS(userId)
+            const filter=req.query.filter as 'score' | 'new' | 'none'
+            const response=await this.atsService.getAllATS(userId,filter)
             if(!response) return res.status(404).json({message:'There are no ATS Scans Found.'})
                 res.status(200).json(response)
         }

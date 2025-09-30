@@ -11,6 +11,8 @@ import ATS_SchemaInterface from "../../interfaces/atsInterface";
 import mongoose , {UpdateQuery} from "mongoose";
 import { flatten } from "flat";
 import { ResumeType } from "../../interfaces/resumeInterface";
+import JustDiffOp from "../../utils/customTypes";
+import { UpdateDB } from "../../utils/updatedFields";
 
 
 class ResumeService<T extends ResumeDataInterface>{
@@ -120,28 +122,19 @@ class ResumeService<T extends ResumeDataInterface>{
             }
     
         }   
-        async SaveResumeService(changedFields:string | object,userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string ){
+        async SaveResumeService(changedFields:JustDiffOp[],userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string ){
                
-            try{
-                console.log(changedFields)
-                const extractedFields=Object.keys(changedFields)[0]
-                const parsedFields=JSON.parse(extractedFields)
-                console.log(parsedFields)
-                if (parsedFields.experiences && Object.keys(parsedFields.experiences).length===0) 
-                parsedFields.experiences = [];
-                if(parsedFields.education && Object.keys(parsedFields.education).length===0)
-                parsedFields.education=[]
-            
-                const updatedFields:Record<string,any>=flatten(parsedFields,{safe:true})
-                
-                const newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},{$set:updatedFields},
+            try{ 
+                const updated=UpdateDB(changedFields)
+              
+               const newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},updated,
                 {new:true}).select("-_id -userId")
-               
-                if(!newResume) throw new HttpException("Couldn't Find Resume To Update",404)
+              
+               if(!newResume) throw new HttpException("Couldn't Find Resume To Update",404)
                 return newResume
             }
             catch(error){
-                console.log(error)
+                 console.log(error)
                 throw new HttpException('Error While Updating Resume')
             }
 
