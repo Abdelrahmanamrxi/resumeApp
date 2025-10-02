@@ -1,14 +1,11 @@
 import ResumeDataInterface from "../../interfaces/resumeInterface";
 import Resume from "../../model/Resume/Resume";
 import puppeteer from "puppeteer";
-import TemplateService from "./templateServices/templateService";
+import TemplateService from "../template/templateService";
 import HttpException from "../../error/Error";
 import CloudinaryService from "../cloudinary/cloudinaryService";
-import ParseService from "../parseText/parseService"
 import OpenApiService from "../openApi/openapiService";
-import ATS from "../../model/ATS/ATS";
-import ATS_SchemaInterface from "../../interfaces/atsInterface";
-import mongoose , {UpdateQuery} from "mongoose";
+import mongoose , {UpdateQuery,Document} from "mongoose";
 import { flatten } from "flat";
 import { ResumeType } from "../../interfaces/resumeInterface";
 import JustDiffOp from "../../utils/customTypes";
@@ -43,42 +40,7 @@ class ResumeService<T extends ResumeDataInterface>{
         }
             
     }
-    async AnalyzePDFService(file:Express.Multer.File,mimetype:string,jobDescription:string,userId:string){
-        try{
-            const text=await ParseService.getExtractedText(file.buffer,mimetype)
-            
-            const response:ATS_SchemaInterface= await this.openApiService.generateAIAnaylsis(text,jobDescription)
-
-            const{strengths,weakness,missingKeywords,foundKeywords,sections,metrics,recommendations,verdict,matchScore}=response
-
-            const public_url=await this.cloudinaryService.UploadToCloudinary(file.buffer,userId)
-
-            let ats=await ATS.create({
-                matchScore,
-                strengths,
-                weakness,
-                missingKeywords,
-                foundKeywords,
-                sections,
-                metrics,
-                recommendations,
-                verdict
-                ,userId:userId,
-                jobDescription,
-                fileDetails:{
-                fileName:file.originalname,
-                mimeType:mimetype,
-                fileUrl:public_url,
-                parsedText:text
-            }})
-            await ats.save()
-            return ats._id
-        }
-        catch(err){
-            console.log(err)
-            throw new HttpException('Error While Analyzing Resume')
-        }
-    }
+ 
     async createResumeService(resumeData:T){
         try{
          
@@ -122,23 +84,41 @@ class ResumeService<T extends ResumeDataInterface>{
             }
     
         }   
-        async SaveResumeService(changedFields:JustDiffOp[],userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string ){
+        async SaveResumeService(changedFields:JustDiffOp[],userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string )
+        : Promise<Document<Partial<ResumeType>> | null>
+        {
                
             try{ 
                 const updated=UpdateDB(changedFields)
-              
-               const newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},updated,
-                {new:true}).select("-_id -userId")
-              
-               if(!newResume) throw new HttpException("Couldn't Find Resume To Update",404)
+                let newResume:(Document<Partial<ResumeType>>) | null=null
+                if(updated.$set){
+                       newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},updated.$set,
+                       {new:true}).select("-_id -userId")
+                }
+                if(updated.$pullAll){
+                      newResume=await Resume.findOneAndUpdate({userId: new mongoose.Types.ObjectId(userId) ,_id:new mongoose.Types.ObjectId(_id)},updated.$pullAll,
+                      {new:true}).select("-_id -userId")
+                }
+                
+                 if(!newResume) throw new HttpException("Couldn't Find Resume To Update",404)
                 return newResume
             }
             catch(error){
                  console.log(error)
                 throw new HttpException('Error While Updating Resume')
             }
-
         }
+        async DeleteResumeService(userId:mongoose.Types.ObjectId | string , _id:mongoose.Types.ObjectId | string ){
+            try{
+                let resume=await Resume.findOneAndDelete({userId,_id})
+                return resume
+            }
+            catch(err){
+                throw new HttpException('Error While Deleting Resume')
+            }
+            
+        }
+        
 
 
 }

@@ -1,4 +1,4 @@
-import ResumeDataInterface, { TemplateProduct, getColor } from "../../../interfaces/resumeInterface";
+import ResumeDataInterface, { TemplateProduct, getColor } from "../../interfaces/resumeInterface";
 class ModernColumn<T extends ResumeDataInterface> implements TemplateProduct {
     public resumeData:T
     constructor(resumeData:T){

@@ -6,12 +6,12 @@ import CVTemplate from "./pages/Dashboard/CV/CVTemplate"
 import Dashboard from "./pages/Dashboard/Dashboard"
 import Redirect from "./pages/Login/pages/Redirect"
 import AuthDashboard from "./pages/Dashboard/AuthDashboard/AuthDashboard"
-import ResumeAnalyze from "./pages/Dashboard/ResumeAnalyze/ResumeAnalyze"
-import DashboardContent from "./pages/Dashboard/DashboardContent"
+import DashboardContent from "./pages/Dashboard/DashboardData/DashboardContent"
 import PricingSection from "./pages/Billing/PricingSection"
-import ATSAnalysis from "./pages/Dashboard/ResumeAnalyze/ATSAnaylsis"
-import SavedAts from "./pages/Dashboard/SavedATS/SavedAts"
+import ATSResults from "./pages/Dashboard/ResumeAnalyze/ATSResults"
+import SavedAts from "./pages/Dashboard/DashboardData/SavedATS/SavedAts"
 import About from "./pages/About/About"
+import AnalyzeResume from "./pages/Dashboard/ResumeAnalyze/AnalyzeResume"
 
 
 
@@ -33,8 +33,8 @@ function App() {
        <Route element={<CVTemplate/>} path="/user/dashboard/resume/:resumeId"/>
        <Route element={<Dashboard/>}>
         <Route element={<DashboardContent/>} path="/user/dashboard"/>
-        <Route element={<ResumeAnalyze/>} path="/user/dashboard/resume-analyze"/>  
-        <Route element={<ATSAnalysis/>} path="/user/dashboard/resume-analyze/:id"/>
+        <Route element={<AnalyzeResume/>} path="/user/dashboard/resume-analyze"/>  
+        <Route element={<ATSResults/>} path="/user/dashboard/resume-analyze/:id"/>
         <Route element={<SavedAts/>} path="/user/dashboard/savedats"/>
         
        </Route>

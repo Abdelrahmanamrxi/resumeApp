@@ -9,7 +9,7 @@ import useResumeUploader from "@/hooks/useResumeUploader"
 
 
 
-function ResumeAnalyze() {
+function AnalyzeResume() {
     const[state,dispatch]=useResumeUploader()
     const navigate=useNavigate()
     
@@ -65,7 +65,7 @@ function ResumeAnalyze() {
       }
 
     formData.append('jobDescription',state.jobDescription)
-    const response=await api.post('/resume/analysis',formData)
+    const response=await api.post('/ats/analysis',formData)
     dispatch({type:'SET_ID',payload:response.data.response})
     dispatch({type:'SET_LOADING',payload:false})
     navigate(`${response.data.response}`)
@@ -181,4 +181,4 @@ Example: We are looking for a Software Engineer with experience in React, Node.j
 
 }
 
-export default ResumeAnalyze
+export default AnalyzeResume

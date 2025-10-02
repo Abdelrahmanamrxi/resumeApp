@@ -45,7 +45,7 @@ function CVTemplate() {
             }),certifications:response.data.certifications.filter((cert:Certification)=>cert!==null && cert!==undefined).map((cert:Certification)=>{
                 return {...cert,year:new Date(cert.year)}
             })}
-            console.log(data)
+           
             setData(data)
             setLoading(false)
         }

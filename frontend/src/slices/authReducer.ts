@@ -46,6 +46,7 @@ const authReducer=createSlice({
         setAccessToken:(state:AuthType,action:PayloadAction<string>)=>{
             state.accessToken=action.payload
             const user=UserFromToken(state.accessToken)
+           
             if(user){
                 state.name=user.name
                 state.email=user.email

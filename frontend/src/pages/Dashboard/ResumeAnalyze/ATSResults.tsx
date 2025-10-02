@@ -6,54 +6,19 @@ import { Progress } from "../../../components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {motion} from 'framer-motion'
+import ScoreDonut from "./comp/ScoreDonut";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import Loading from "@/components/Loading/Loading";
-import { useParams } from "react-router-dom";
 import { CheckCircle2, XCircle, Lightbulb, ShieldCheck, Target, FileCheck, AlertTriangle, ListChecks, BarChart2,ChevronLeft } from "lucide-react";
 import api from "@/middleware/interceptor";
 import { AxiosError } from "axios";
+import { type ATSResult } from "./interface/ATS";
+import {listVariants,itemVariants} from './utils/helper'
+import SectionRow from "./comp/SectionRow";
+import Pill from "./comp/Pill";
 
 
-// -------------------- Types ---------------------
-export type ATSResult = {
-  matchScore: number; // 0..100
-  strengths: string[];
-  weakness: string[]; // note: key name matches your schema
-  missingKeywords: string[];
-  verdict: "Strong Match" | "Moderate Match" | "Weak Match";
-  recommendations: string[];
-  sections: {
-    education: boolean;
-    experience: boolean;
-    certifications: boolean;
-    skills: {
-      tech: boolean;
-      soft: boolean;
-    };
-  };
-  metrics?: {
-    pageCount: number;
-    wordCount: number;
-    metricRecommendation?: string;
-  };
-  foundKeywords: string[];
-};
-
-// ===================== Helpers =====================
-const listVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15, // delay between each child
-    },
-  },
-};
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0 },
-};
 function verdictStyles(v: ATSResult["verdict"]) {
   switch (v) {
     case "Strong Match":
@@ -65,51 +30,8 @@ function verdictStyles(v: ATSResult["verdict"]) {
   }
 }
 
-function scoreRingColor(score: number) {
-  if (score >= 80) return "from-emerald-500";
-  if (score >= 60) return "from-amber-500";
-  return "from-rose-500";
-}
 
-// Circular progress using conic-gradient + centered number
-const ScoreDonut: React.FC<{ score: number; size?: number }> = ({ score, size = 140 }) => {
-  const clamped = Math.max(0, Math.min(100, score));
-  const angle = (clamped / 100) * 360;
-  return (
-    <div className="relative grid place-items-center" style={{ width: size, height: size }}>
-      <div
-        className={`absolute inset-0 rounded-full bg-gradient-to-tr ${scoreRingColor(clamped)} to-transparent`}
-        style={{ mask: `conic-gradient(#000 ${angle}deg, transparent ${angle}deg)` }}
-      />
-      <div className="absolute inset-2 rounded-full bg-white shadow-inner" />
-      <div className="relative text-center">
-        <div className="text-4xl font-bold">{clamped}</div>
-        <div className="text-sm text-muted-foreground -mt-1">Match</div>
-      </div>
-    </div>
-  );
-};
-
-const Pill: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = "", children }) => (
-  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${className}`}>{children}</span>
-);
-
-const SectionRow: React.FC<{ label: string; ok: boolean }> = ({ label, ok }) => (
-  <div className="flex items-center justify-between py-2">
-    <div className="flex items-center gap-2">
-      {ok ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <XCircle className="w-4 h-4 text-rose-600" />}
-      <span className="text-sm">{label}</span>
-    </div>
-    <Badge variant={ok ? "secondary" : "destructive"} className="text-xs">{ok ? "Present" : "Missing"}</Badge>
-  </div>
-);
-
-// ===================== Main Component =====================
-
-
-
-
- function ATSAnalysis() {
+ function ATSResults() {
     const[data,setData]=useState<ATSResult>()
     const {id:_id}=useParams() 
    
@@ -314,4 +236,4 @@ const SectionRow: React.FC<{ label: string; ok: boolean }> = ({ label, ok }) => 
   );
 }
 
-export default React.memo(ATSAnalysis)
+export default React.memo(ATSResults)

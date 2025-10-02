@@ -3,7 +3,7 @@ import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { fadeUp } from '@/utils/comp'
 import { Sparkles , ChevronRight } from 'lucide-react'
-import { type LatestATSResultsType } from '../DashboardContent'
+import { type LatestATSResultsType } from '../DashboardData/DashboardContent'
 
 
 

@@ -5,23 +5,26 @@ import {
   ChevronRight,
   
 } from 'lucide-react';
-import React, {useEffect, useRef,useState} from 'react'
+import React, {useRef,useState} from 'react'
 import SavedResumes from './SavedResumes/SavedResumes';
 
 import { Link } from 'react-router-dom';
 import CVSelection from '@/components/CVs/selection/CVSelection';
 import { templates } from '@/components/CVs/constants/constant';
 import { type ResumeData, type ResumeType } from '@/components/CVs/interfaces/cvInterface';
-import { type ATS_SchemaInterface } from '../../interfaces'
+import { type ATS_SchemaInterface } from '../../../interfaces'
 import {motion} from 'framer-motion'
 import { fadeUp } from '@/utils/comp';
-import AISummary from './AISummary/AISummary';
+import AISummary from '../AISummary/AISummary';
 import api from '@/middleware/interceptor';
 import Loading from '@/components/Loading/Loading';
 import { AxiosError } from 'axios';
+import { useQueries } from '@tanstack/react-query';
+import { jwtDecode } from 'jwt-decode';
 
 
-   type DataWithTimeStamp=ResumeData & {
+
+type DataWithTimeStamp=ResumeData & {
           updatedAt:Date,
           _id:string
         }
@@ -32,8 +35,7 @@ import { AxiosError } from 'axios';
     }
 
 const DashboardContent = () => {
-  
-
+    
     const ref=useRef<HTMLDivElement | null>(null)
     const scrollIntoView=()=>{
       if(ref.current){
@@ -41,15 +43,14 @@ const DashboardContent = () => {
       }
       }
     const[templateOpen,setTemplate]=useState<{title:string,id:ResumeType,src:string} | null>(null)
-
-    const[isLoading,setLoading]=useState<boolean>(false)
     
-    const [data,setData]=useState<{savedResumes:SavedResumesType[]| []  ,atsResults:LatestATSResultsType | '' }>()
+    const token=localStorage.getItem('token')
+    let _id: string | undefined;
+     if (token) {
+    const decoded = jwtDecode<{ _id: string }>(token);
+     _id = decoded._id;
+}
 
-    const [customError,setError]=useState<{savedResumes:string  ,atsResults:string } >({
-      savedResumes:'',
-      atsResults:''
-    })
     const [NetworkError,setNetwork]=useState<string>('')
 
     const FetchAllResumes=async()=>{
@@ -68,8 +69,6 @@ const DashboardContent = () => {
     const FetchLatestATSResults=async()=>{
       try{
         const response=await api.get('ats/results/latest') 
-        
-      
         return { recommendations:response.data.recommendations , foundKeywords:response.data.foundKeywords , matchScore:response.data.matchScore ,_id:response.data._id, missingKeywords:response.data.missingKeywords}  as LatestATSResultsType | ''
       }
       catch(err){
@@ -81,25 +80,22 @@ const DashboardContent = () => {
         }
       }
     }
-
+     const result=useQueries({
+      queries:[
+        {
+          queryKey:['savedResumes',_id],
+          queryFn:FetchAllResumes,
+          enabled:!!_id
+        },
+        {
+          queryKey:['latestATS',_id],
+          queryFn:FetchLatestATSResults,
+          enabled:!!_id
+        }
+      ]
+    })
+    const [savedResumesQuery,latestATSQuery]=result
    
-
-    useEffect(()=>{
-      setLoading(true)
-      Promise.allSettled([FetchAllResumes(),FetchLatestATSResults()]).then((response)=>{
-        setData({
-          savedResumes:response[0].status==="fulfilled" && response[0].value ? response[0].value:[] ,
-          atsResults:response[1].status==="fulfilled"  && response[1].value ? response[1].value : ''
-        })
-        setError({
-          savedResumes:response[0].status==="rejected" && response[0].reason ? String(response[0].reason):'',
-          atsResults:response[1].status==="rejected" && response[1].reason ?String(response[1].reason) :''
-        })
-      }).finally(()=>{
-        setLoading(false)
-      })
-     
-    },[])
   
     if(NetworkError) return  <div
       style={{
@@ -120,9 +116,9 @@ const DashboardContent = () => {
       <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>[NETWORK ERROR] : {NetworkError}</p>
     </div>
 
-  if(isLoading) return <Loading message='Loading Data..'/>
+  if(savedResumesQuery.isLoading || latestATSQuery.isLoading) return <Loading message='Loading Data..'/>
   
-  if(customError.atsResults || customError.savedResumes){
+  if(savedResumesQuery.error || latestATSQuery.error){
     
     return (
       <div
@@ -141,14 +137,14 @@ const DashboardContent = () => {
         zIndex: 9999, // stay on top
       }}
     >
-    {customError.atsResults && <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>{customError.atsResults}</p>}
-    {customError.savedResumes && <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>{customError.savedResumes}</p>}
+    {savedResumesQuery.error && <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>{savedResumesQuery.error.message}</p>}
+    {latestATSQuery.error && <p className='text-sm sm:text-base p-4  text-red-500 font-semibold '>{latestATSQuery.error.message}</p>}
     </div>
     )
   }
   
   return (
-       <div className="flex flex-1 mt-5 flex-col gap-4 p-4 pt-0">
+       <div className="flex flex-1 mt-5 flex-col gap-4 md:p-4 pt-0">
       <motion.div
         className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         initial="hidden"
@@ -203,7 +199,7 @@ const DashboardContent = () => {
       </motion.div>
 
       {/* Your Resumes Section */}
-      { data?.savedResumes && data?.savedResumes.length>0 && <SavedResumes data={data?.savedResumes}/> }
+      { savedResumesQuery.data && savedResumesQuery.data.length>0 && <SavedResumes data={savedResumesQuery?.data}/> }
 
       {/* Templates Preview */}
       <motion.div
@@ -252,7 +248,7 @@ const DashboardContent = () => {
       )}
 
       {/* AI Analysis Summary */}
-     {data?.atsResults && <AISummary latestResults={data.atsResults}/>}
+     {latestATSQuery?.data && <AISummary latestResults={latestATSQuery.data}/>}
     </div>
   );
 };

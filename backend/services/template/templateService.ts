@@ -1,9 +1,9 @@
 import MinimalProfessional from "./minimalProfessional";
 import ModernMinimalist from "./modernMinimalist";
-import ResumeDataInterface from "../../../interfaces/resumeInterface";
-import { TemplateProduct } from "../../../interfaces/resumeInterface";
+import ResumeDataInterface from "../../interfaces/resumeInterface";
+import { TemplateProduct } from "../../interfaces/resumeInterface";
 import ModernColumn from "./modernTwoColumn";
-import HttpException from "../../../error/Error";
+import HttpException from "../../error/Error";
 import ModernProfessional from "./modernProfessional";
 
 class TemplateService  {

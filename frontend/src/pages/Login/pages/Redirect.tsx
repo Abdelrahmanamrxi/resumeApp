@@ -7,6 +7,7 @@ import { useEffect } from "react"
     const accessToken=searchParams.get('accessToken')
     const navigate=useNavigate()
     const dispatch=useAppDispatch()
+   
     
   useEffect(() => {
     if (!accessToken) {
@@ -17,7 +18,7 @@ import { useEffect } from "react"
     }
   }, [accessToken, dispatch, navigate])
       return (
-        <div>
+        <div className="h-screen">
           <h1>Redirecting...</h1>
         </div>
       )

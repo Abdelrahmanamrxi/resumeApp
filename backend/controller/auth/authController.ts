@@ -50,6 +50,7 @@ class AuthController {
             
         }
         catch(err){
+            
             return next(new HttpException('Login Failed Please Try again later.'))
         }
 

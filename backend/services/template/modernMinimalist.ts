@@ -1,6 +1,6 @@
-import ResumeDataInterface from "../../../interfaces/resumeInterface"
-import { TemplateProduct } from "../../../interfaces/resumeInterface";
-import { getColor } from "../../../interfaces/resumeInterface";
+import ResumeDataInterface from "../../interfaces/resumeInterface"
+import { TemplateProduct } from "../../interfaces/resumeInterface";
+import { getColor } from "../../interfaces/resumeInterface";
 class ModernMinimalist <T extends ResumeDataInterface>  implements TemplateProduct {
    
     public resumeData:T

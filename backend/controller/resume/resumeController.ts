@@ -22,26 +22,7 @@ class ResumeController{
         }
     }
 
-    async AnalyzePDF(req:Request,res:Response,next:NextFunction){
-        try{
-            const file=req.file
-            const {jobDescription}=req.body
-            const {_id}=req.user as {_id:string}
-            
-            if(!file && !jobDescription) return res.status(400).json({message:"Please provide the file you want to analyze and a job description."})
 
-            if(!jobDescription) return res.status(400).json({message:'Please provide a job description'})
-
-            if(!file) return res.status(400).json({message:'Please provide a file for further anaylsis'})
-
-            const response=await this.resumeService.AnalyzePDFService(file,file?.mimetype,jobDescription,_id)
-            res.status(201).json({response})
-        }
-        catch(err){
-            next(err)
-        }
-        
-    }
     async createResume(req:Request,res:Response,next:NextFunction){
         try{
             const resumeData=req.body as ResumeDataInterface
@@ -68,7 +49,7 @@ class ResumeController{
         if(!resumeId) return res.status(400).json({message:"Please provide a resume ID to access the resume"})
 
         const response=await this.resumeService.getResumeService(_id,resumeId,resumeType)
-        console.log(response)
+        
         if(!response) return res.status(404).json({message:"Couldn't find resume matching your criteria."})
         res.status(200).json(response)
     }
@@ -127,7 +108,22 @@ class ResumeController{
         }
 
     }
+    async DeleteResume(req:Request,res:Response,next:NextFunction){
+        try{
+            const {resumeId:_id}=req.params as {resumeId:mongoose.Types.ObjectId | string}
+            const {_id:userId}=req.user as {_id:mongoose.Types.ObjectId | string}
 
+            const response=await this.resumeService.DeleteResumeService(userId,_id)
+
+            if(!response) return res.status(404).json({message:"Couldn't find a resume matching your criteria"})
+            res.status(204).end()
+        }
+        catch(err){
+            next(err)
+        }
+        
+
+    }
 
 }
 export default ResumeController

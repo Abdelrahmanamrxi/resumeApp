@@ -13,10 +13,10 @@ const resumeService=new ResumeService(cloudinaryService,openApiService)
 const resumeController=new ResumeController(resumeService)
 
 router.post('/pdf',authMiddleware('user'),resumeController.generatePDF.bind(resumeController))
-router.post('/analysis',authMiddleware('user'),upload.single('file'),resumeController.AnalyzePDF.bind(resumeController))
 router.post('/',authMiddleware('user'),resumeController.createResume.bind(resumeController))
 router.get('/:resumeId',authMiddleware('user'),resumeController.getResume.bind(resumeController))
 router.get('/',authMiddleware('user'),resumeController.getAllResumes.bind(resumeController))
 router.post('/match',authMiddleware('user'),resumeController.generateResumeSection.bind(resumeController))
 router.patch('/:resumeId',authMiddleware('user'),resumeController.SaveResume.bind(resumeController))
+router.delete('/:resumeId',authMiddleware('user'),resumeController.DeleteResume.bind(resumeController))
 export default router
