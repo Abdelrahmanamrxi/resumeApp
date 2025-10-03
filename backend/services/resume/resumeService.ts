@@ -27,9 +27,10 @@ class ResumeService<T extends ResumeDataInterface>{
             await page.setContent(template,{waitUntil:'networkidle0'})
             const pdf= await page.pdf({
                 format:'A4',
-                printBackground:true
+                printBackground:true,
+                pageRanges:'1-6'
             })
-            await this.cloudinaryService.UploadToCloudinary(Buffer.from(pdf),userId)
+           // await this.cloudinaryService.UploadToCloudinary(Buffer.from(pdf),userId)
             await browser.close()
             return pdf
             

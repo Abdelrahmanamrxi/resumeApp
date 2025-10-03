@@ -1,17 +1,20 @@
 import { BrowserRouter,Routes,Route } from "react-router-dom"
-import LandingPage from "./pages/LandingPage/LandingPage"
-import Login from "./pages/Login/pages/Login"
-import Signup from "./pages/Signup/Signup"
-import CVTemplate from "./pages/Dashboard/CV/CVTemplate"
-import Dashboard from "./pages/Dashboard/Dashboard"
-import Redirect from "./pages/Login/pages/Redirect"
-import AuthDashboard from "./pages/Dashboard/AuthDashboard/AuthDashboard"
-import DashboardContent from "./pages/Dashboard/DashboardData/DashboardContent"
-import PricingSection from "./pages/Billing/PricingSection"
-import ATSResults from "./pages/Dashboard/ResumeAnalyze/ATSResults"
-import SavedAts from "./pages/Dashboard/DashboardData/SavedATS/SavedAts"
-import About from "./pages/About/About"
-import AnalyzeResume from "./pages/Dashboard/ResumeAnalyze/AnalyzeResume"
+import React, {Suspense} from "react"
+import Loading from "./components/Loading/Loading";
+const LandingPage = React.lazy(() => import("./pages/LandingPage/LandingPage"));
+const Login=React.lazy(()=>import('./pages/Login/pages/Login'))
+const Signup=React.lazy(()=>import('./pages/Signup/Signup'))
+const CVTemplate=React.lazy(()=>import('./pages/Dashboard/CV/CVTemplate'))
+const Dashboard=React.lazy(()=>import('./pages/Dashboard/Dashboard'))
+const Redirect=React.lazy(()=>import('./pages/Login/pages/Redirect'))
+const AuthDashboard=React.lazy(()=>import('./pages/Dashboard/AuthDashboard/AuthDashboard'))
+const DashboardContent=React.lazy(()=>import('./pages/Dashboard/DashboardData/DashboardContent'))
+const PricingSection=React.lazy(()=>import('./pages/Billing/PricingSection'))
+const ATSResults=React.lazy(()=>import('./pages/Dashboard/ResumeAnalyze/ATSResults'))
+const SavedAts=React.lazy(()=>import('./pages/Dashboard/SavedATS/SavedAts'))
+const About=React.lazy(()=>import('./pages/About/About'))
+const AnalyzeResume=React.lazy(()=>import('./pages/Dashboard/ResumeAnalyze/AnalyzeResume'))
+
 
 
 
@@ -22,6 +25,8 @@ function App() {
   return (
     <>
     <BrowserRouter>
+    <Suspense fallback={<Loading message="Loading..."/>}>
+
     <Routes>
       <Route element={<LandingPage/>} path="/"/>
       <Route element={<Login/>} path="/login"/>
@@ -40,6 +45,7 @@ function App() {
        </Route>
        </Route>
     </Routes>
+    </Suspense>
     </BrowserRouter>
    
 

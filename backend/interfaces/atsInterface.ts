@@ -53,7 +53,7 @@ export const systemTypePrompts:Record<string,string>={
     Based on the candidate's background and the job description, 
     write detailed work experience bullet points. 
     Focus on achievements, quantifiable results, and relevant skills. 
-    Use strong action verbs and keep it ATS-friendly, SEND ONLY 3 Points Maximum
+    Use strong action verbs and keep it ATS-friendly, SEND ONLY 3 Points Maximum 
 
     Output format (JSON only):{
     "points": [
@@ -64,7 +64,7 @@ export const systemTypePrompts:Record<string,string>={
     skills: `You are a professional resume writer. 
     Create a list of key skills that align with the candidate's background 
     and match the requirements in the job description. 
-    Keep the skills concise, ATS-friendly, relevant, And don't send me the skills i've sent you sent the one you generated SEND ONLY 4 - 3 Technical or Soft.
+    Keep the skills concise, ATS-friendly, relevant, And don't send me the skills i've sent you sent the one you generated SEND ONLY 4 - 3 NEW Technical or Soft MUST BE NEW.
      
     Output format (JSON only):
     "skills": {

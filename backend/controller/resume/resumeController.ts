@@ -59,7 +59,7 @@ class ResumeController{
 
             const response=await this.resumeService.getAllResumesService(_id)
             
-            if(!response) return res.status(404).json({message:"No resumes have been found matching your criteria"})
+            if(!response) return res.status(200).json([])
             res.status(200).json(response)
         }
         catch(err){

@@ -39,7 +39,10 @@ const Skills = ({addSkill,newSoftSkill,newTechSkill,setNewSoftSkill,setNewTechSk
 
   const generateSkills=async()=>{
     const response=await dispatch(generateSection({text:[...resumeData.skills.soft,...resumeData.skills.technical],jobDescription,type:'skills'})).unwrap()
-   
+    if (!response) {
+    console.warn("Empty response from generateSection")
+    return []
+}
     const parsedSkill=JSON.parse(response.replace(/```json|```/g, ""))
     const skills=parsedSkill.skills
    

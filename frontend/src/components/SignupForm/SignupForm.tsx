@@ -12,7 +12,7 @@ import  {setAccessToken, type SignUpInterface} from "@/slices/authReducer"
 import { Eye, EyeOff } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useReducerHooks"
 import {useSignUpMutation} from "@/slices/authServiceReducer"
-import { useNavigate } from "react-router-dom"
+import { useNavigate,Link } from "react-router-dom"
 
 
  function SignupForm({
@@ -121,9 +121,9 @@ import { useNavigate } from "react-router-dom"
         </Button>
          <div className="text-center mt-4 text-sm">
         Already have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
+        <Link to="/login" className="underline underline-offset-4">
           Login 
-        </a>
+        </Link>
       </div>
     </>
   )

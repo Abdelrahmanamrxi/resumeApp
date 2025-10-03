@@ -1,4 +1,3 @@
-import OpenAI from "openai"
 import { systemPrompt,systemTypePrompts } from "../../interfaces/atsInterface"
 import Groq from "groq-sdk"
 import HttpException from "../../error/Error"

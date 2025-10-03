@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { jwtDecode } from "jwt-decode"
 
 
 
@@ -40,7 +41,12 @@ interface Resume {
 
 
 const SavedAts: React.FC = () => {
-
+  let id:string |undefined
+  const token=localStorage.getItem('token')
+  if(token){
+    const decoded=jwtDecode<{_id:string}>(token)
+    id=decoded._id
+  }
   const[filter,setFilter]=useState<string>('none')
   const queryClient=useQueryClient()
   const navigate=useNavigate()
@@ -60,7 +66,7 @@ const SavedAts: React.FC = () => {
       }
   }
       const {data:resumes,isLoading,error}=useQuery({
-      queryKey:['savedAts'],
+      queryKey:['savedAts',id],
       queryFn:fetchUserATS,
       })
       useEffect(()=>{

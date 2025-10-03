@@ -15,7 +15,7 @@ import { type ResumeData, type ResumeType } from '@/components/CVs/interfaces/cv
 import { type ATS_SchemaInterface } from '../../../interfaces'
 import {motion} from 'framer-motion'
 import { fadeUp } from '@/utils/comp';
-import AISummary from '../AISummary/AISummary';
+import AISummary from './AISummary/AISummary';
 import api from '@/middleware/interceptor';
 import Loading from '@/components/Loading/Loading';
 import { AxiosError } from 'axios';
@@ -30,9 +30,9 @@ type DataWithTimeStamp=ResumeData & {
         }
   export type SavedResumesType= Pick<DataWithTimeStamp,"updatedAt"|"resumeName"|"resumeType"|"_id"|"resumeType">
 
-  export type LatestATSResultsType=Pick<ATS_SchemaInterface, "recommendations" | "foundKeywords" | "matchScore"|'missingKeywords'> & {
+  export type LatestATSResultsType=Required<Pick<ATS_SchemaInterface, "recommendations" | "foundKeywords" | "matchScore"|'missingKeywords'> & {
       _id:string
-    }
+    } >
 
 const DashboardContent = () => {
     

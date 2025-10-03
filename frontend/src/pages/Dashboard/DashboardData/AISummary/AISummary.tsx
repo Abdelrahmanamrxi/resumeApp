@@ -3,12 +3,13 @@ import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { fadeUp } from '@/utils/comp'
 import { Sparkles , ChevronRight } from 'lucide-react'
-import { type LatestATSResultsType } from '../DashboardData/DashboardContent'
+import { type LatestATSResultsType } from '../DashboardContent'
 
 
 
 function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
   const navigate=useNavigate()
+
   return (
      <motion.div
         variants={fadeUp}
@@ -16,7 +17,7 @@ function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
         animate="visible"
         className="rounded-lg border bg-card"
       >
-        <div className="p-6">
+        {latestResults._id!==undefined && <div className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="h-5 w-5 text-blue-600" />
             <h2 className="text-lg font-semibold"> Latest AI Analysis Summary</h2>
@@ -44,7 +45,7 @@ function AISummary({latestResults}:{latestResults:LatestATSResultsType}) {
             View detailed analysis
             <ChevronRight className="h-3 w-3" />
           </motion.button>
-        </div>
+        </div>}
       </motion.div>
   )
 }
