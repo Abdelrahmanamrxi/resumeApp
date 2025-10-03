@@ -1,45 +1,26 @@
-import express from 'express'
-import cors from 'cors'
-import Database from './config/config'
-import cookieParser from 'cookie-parser'
-import errorMiddleware from './middleware/errorMiddleware'
-import passport from 'passport'
-import googleStrategy from './config/GoogleStrategy'
-import authRouter from './routes/auth'
+import Server from "./app";
 import resumeRouter from './routes/resume'
 import atsRouter from './routes/ats'
+import authRouter from './routes/auth'
+import { Routes,AppConfig } from "./interfaces/serverInterface/serverInterfaces";
+import errorMiddleware from "./middleware/errorMiddleware";
+import passport from 'passport'
 require('dotenv').config()
-const PORT=process.env.PORT? process.env.PORT : 3000
-const app=express()
-app.use(express.json())
-app.use(cookieParser())
-app.use(express.urlencoded({
-    extended:false
-}))
-app.use(cors({
-    origin:"http://localhost:5173",
+
+const ServerRoutes:Routes[]=[
+    {path:'/api/auth',route:authRouter},
+    {path:'/api/ats',route:atsRouter},
+    {path:'/api/resume',route:resumeRouter}
+]
+const serverConfig:AppConfig={
+    corsOptions:{
+    origin:process.env.FRONTEND_ROUTE as string,
     methods:['GET','POST','PATCH','DELETE'],
     credentials:true
-}))
-const Strategy=new googleStrategy()
-Strategy.SetUpStrategy()
-app.use(passport.initialize())
-app.use('/api/auth',authRouter)
-app.use('/api/resume',resumeRouter)
-app.use('/api/ats',atsRouter)
+    },
+    errorHandler:errorMiddleware,
+    middlewares:[passport.initialize()]
+}
 
-
-
-
-
-app.use(errorMiddleware)
-app.listen(PORT,async():Promise<void>=>{
-    try{
-    await Database.getDBInstance()
-    console.log(`[SUCCESS] : Database has been connected to The Server`)
-    console.log(`Server is Listening on Port ${PORT}`)
-    }
-    catch(err){
-        console.error(`[ERROR]:${err}`)
-    }
-})
+const server=new Server(ServerRoutes,Number(process.env.PORT),serverConfig)
+server.StartServer()

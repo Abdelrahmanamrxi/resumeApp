@@ -1,7 +1,7 @@
 import passport from 'passport'
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
 import User from '../model/User/User'
-class googleStrategy {
+class GoogleConfig {
 
     public clientID=process.env.CLIENT_ID as string
     public clientSecret=process.env.CLIENT_SECRET as string
@@ -47,4 +47,4 @@ class googleStrategy {
     }
 
 }
-export default googleStrategy
+export default GoogleConfig
