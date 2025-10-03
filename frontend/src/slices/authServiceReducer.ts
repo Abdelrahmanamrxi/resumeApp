@@ -1,8 +1,9 @@
 import {createApi,fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import type { SignUpInterface } from './authReducer'
+const apiUrl=import.meta.env.VITE_API_BACKEND_AUTH_URL
 const authSlice=createApi({
     reducerPath:'auth',
-    baseQuery:fetchBaseQuery({baseUrl:'http://localhost:3000/api/auth'}),
+    baseQuery:fetchBaseQuery({baseUrl:apiUrl}),
     endpoints:(builder)=>({
     SignUp:builder.mutation<string,SignUpInterface>({
         query:(data)=>({

@@ -1,7 +1,8 @@
 import axios from 'axios'
 import store from '../store'
+const apiUrl=import.meta.env.VITE_API_BACKEND_URL
 const api=axios.create({
-    baseURL:'http://localhost:3000/api',
+    baseURL:apiUrl,
     withCredentials:true
 })
 api.interceptors.request.use(
